@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="hansung_skyBlue">#049EDB</color>
+    <color name="hansung_blue">#0A4DA1</color>
+    <color name="hansung_darkBlue">#032E6E</color>
+    <color name="hansung_grey">#626466</color>
 </resources>
