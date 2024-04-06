@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mapFragment : SupportMapFragment
     private val hansung = LatLng(37.582701, 127.010274)
     private lateinit var curLocation: LatLng
-//    private lateinit var locationRequest: LocationRequest
-//    private lateinit var locationCallback: LocationCallback
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
     private val initialZoomLevel = 17f // 초기 축척 설정
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         checkLocationPermission()
 
         //자동 현위치 업데이트
-        //setupLocationUpdates()
+        setupLocationUpdates()
 
         // 지도 fragment 초기화
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -131,8 +131,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null) {
                         curLocation = LatLng(location.latitude, location.longitude)
                         // 위치 정보 사용
-                        Log.d(
-                            "checkLocation 현위치가져오기성공",
+                        Log.d("checkLocation 현위치가져오기성공",
                             "${location.latitude}, ${location.longitude}"
                         )
                     } else {
@@ -175,46 +174,46 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         const val MY_PERMISSIONS_REQUEST_LOCATION = 99
     }
 
-//    private fun setupLocationUpdates() {
-//        locationRequest = LocationRequest.create()!!.apply {
-//            interval = 10000  // 10초 간격으로 업데이트 (필요에 따라 조정)
-//            fastestInterval = 5000  // 가장 빠른 간격 (필요에 따라 조정)
-//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//        }
-//
-//        locationCallback = object : LocationCallback() {
-//            override fun onLocationResult(locationResult: LocationResult) {
-//                locationResult ?: return
-//                for (location in locationResult.locations) {
-//                    // 여기서 위치 정보를 사용
-//                    curLocation = LatLng(location.latitude, location.longitude)
-//
-//                }
-//            }
-//        }
-//        // 위치 업데이트 요청 시작
-//        startLocationUpdates()
-//    }
-//
-//    private fun startLocationUpdates() {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-//            == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            fusedLocationClient.requestLocationUpdates(
-//                locationRequest,
-//                locationCallback,
-//                Looper.getMainLooper()
-//            )
-//        }
-//    }
-//
-//    // 위치 업데이트 중지하는 메소드
-//    private fun stopLocationUpdates() {
-//        fusedLocationClient.removeLocationUpdates(locationCallback)
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        stopLocationUpdates()
-//    }
+    private fun setupLocationUpdates() {
+        locationRequest = LocationRequest.create()!!.apply {
+            interval = 10000  // 10초 간격으로 업데이트 (필요에 따라 조정)
+            fastestInterval = 5000  // 가장 빠른 간격 (필요에 따라 조정)
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult ?: return
+                for (location in locationResult.locations) {
+                    // 여기서 위치 정보를 사용
+                    curLocation = LatLng(location.latitude, location.longitude)
+
+                }
+            }
+        }
+        // 위치 업데이트 요청 시작
+        startLocationUpdates()
+    }
+
+    private fun startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        }
+    }
+
+    // 위치 업데이트 중지하는 메소드
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopLocationUpdates()
+    }
 }
