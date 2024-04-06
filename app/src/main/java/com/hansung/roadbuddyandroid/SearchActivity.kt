@@ -2,6 +2,7 @@ package com.hansung.roadbuddyandroid
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
@@ -15,7 +16,6 @@ import java.io.File
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchingBar: EditText
     private lateinit var listViewRecent: ListView
-    private lateinit var adapterRecent: ArrayAdapter<String>
     private lateinit var recentSearches: List<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,9 @@ class SearchActivity : AppCompatActivity() {
         recentSearches = readSearchHistory()
 
         // ArrayAdapter 초기화
-        adapterRecent = ArrayAdapter(this, android.R.layout.simple_list_item_1, recentSearches)
+        val adapterRecent = CustomAdapter(this, ArrayList(recentSearches)) {
+            writeSearchHistory(it)
+        }
 
         // ListView에 ArrayAdapter 설정
         listViewRecent.adapter = adapterRecent
@@ -39,13 +41,14 @@ class SearchActivity : AppCompatActivity() {
                 // submit 동작을 처리하는 코드
                 val searchText = searchingBar.text.toString()
                 if (searchText.isNotEmpty()) {
+                    recentSearches = readSearchHistory()
                     val updatedHistory = manageHistory(recentSearches, searchText)
-                    adapterRecent.clear()
-                    adapterRecent.addAll(updatedHistory)
-                    adapterRecent.notifyDataSetChanged()
                     searchingBar.setText("")
                     writeSearchHistory(updatedHistory)
                     Toast.makeText(this, searchText, Toast.LENGTH_SHORT).show()
+                    adapterRecent.clear()
+                    adapterRecent.addAll(updatedHistory)
+                    adapterRecent.notifyDataSetChanged()
                 } else
                     Toast.makeText(this, "미입력", Toast.LENGTH_SHORT).show()
                 true // 이벤트 처리 완료
@@ -106,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
                 // 기존 기록이 있다면 해당 기록 삭제
                 tmpHistory.removeAt(index)
             } else if (tmpHistory.size >= 5) {
-                // 목록이 3개 이상이면 가장 오래된 기록 삭제
+                // 목록이 5개 이상이면 가장 오래된 기록 삭제
                 tmpHistory.removeAt(tmpHistory.size - 1)
             }
             // 새 기록을 맨 앞에 추가
