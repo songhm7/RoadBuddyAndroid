@@ -1,18 +1,12 @@
 package com.hansung.roadbuddyandroid
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.TextView
@@ -36,10 +30,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var scaleSeekBar: SeekBar
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var mapFragment : SupportMapFragment
     private val hansung = LatLng(37.582701, 127.010274)
     private lateinit var curLocation: LatLng
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+//    private lateinit var locationRequest: LocationRequest
+//    private lateinit var locationCallback: LocationCallback
     private val initialZoomLevel = 17f // 초기 축척 설정
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,10 +48,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         checkLocationPermission()
 
         //자동 현위치 업데이트
-        setupLocationUpdates()
+        //setupLocationUpdates()
 
         // 지도 fragment 초기화
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         mapFragment.getMapAsync { googleMap ->
@@ -65,7 +60,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // 내 위치 버튼의 참조를 얻기
-        val locationButton = (mapFragment.view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(Integer.parseInt("2"))
+        val locationButton =
+            (mapFragment.view?.findViewById<View>(Integer.parseInt("1"))?.parent as View).findViewById<View>(
+                Integer.parseInt("2")
+            )
 
         // 버튼의 위치 속성 조정
         val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
@@ -100,8 +98,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             startActivity(intent)
         }
 
-        }
-
+    }
 
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -173,46 +170,51 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             // 다른 'case' 라인을 추가하여 다른 권한의 결과를 처리할 수 있음.
         }
     }
+
     companion object {
         const val MY_PERMISSIONS_REQUEST_LOCATION = 99
     }
 
-    private fun setupLocationUpdates() {
-        locationRequest = LocationRequest.create()!!.apply {
-            interval = 10000  // 10초 간격으로 업데이트 (필요에 따라 조정)
-            fastestInterval = 5000  // 가장 빠른 간격 (필요에 따라 조정)
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult ?: return
-                for (location in locationResult.locations){
-                    // 여기서 위치 정보를 사용
-                    curLocation = LatLng(location.latitude, location.longitude)
-
-                }
-            }
-        }
-        // 위치 업데이트 요청 시작
-        startLocationUpdates()
-    }
-
-    private fun startLocationUpdates() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationClient.requestLocationUpdates(locationRequest,
-                locationCallback,
-                Looper.getMainLooper())
-        }
-    }
-
-    // 위치 업데이트 중지하는 메소드
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-    }
-    override fun onStop() {
-        super.onStop()
-        stopLocationUpdates()
-    }
+//    private fun setupLocationUpdates() {
+//        locationRequest = LocationRequest.create()!!.apply {
+//            interval = 10000  // 10초 간격으로 업데이트 (필요에 따라 조정)
+//            fastestInterval = 5000  // 가장 빠른 간격 (필요에 따라 조정)
+//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//        }
+//
+//        locationCallback = object : LocationCallback() {
+//            override fun onLocationResult(locationResult: LocationResult) {
+//                locationResult ?: return
+//                for (location in locationResult.locations) {
+//                    // 여기서 위치 정보를 사용
+//                    curLocation = LatLng(location.latitude, location.longitude)
+//
+//                }
+//            }
+//        }
+//        // 위치 업데이트 요청 시작
+//        startLocationUpdates()
+//    }
+//
+//    private fun startLocationUpdates() {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+//            == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            fusedLocationClient.requestLocationUpdates(
+//                locationRequest,
+//                locationCallback,
+//                Looper.getMainLooper()
+//            )
+//        }
+//    }
+//
+//    // 위치 업데이트 중지하는 메소드
+//    private fun stopLocationUpdates() {
+//        fusedLocationClient.removeLocationUpdates(locationCallback)
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        stopLocationUpdates()
+//    }
 }
