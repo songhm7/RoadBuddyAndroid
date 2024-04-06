@@ -1,6 +1,7 @@
 package com.hansung.roadbuddyandroid
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.EditorInfo
@@ -45,12 +46,17 @@ class SearchActivity : AppCompatActivity() {
                     val updatedHistory = manageHistory(recentSearches, searchText)
                     searchingBar.setText("")
                     writeSearchHistory(updatedHistory)
-                    Toast.makeText(this, searchText, Toast.LENGTH_SHORT).show()
                     adapterRecent.clear()
                     adapterRecent.addAll(updatedHistory)
                     adapterRecent.notifyDataSetChanged()
+
+                    // SearchResultActivity로 이동
+                    val intent = Intent(this, SearchResultActivity::class.java).apply {
+                        putExtra("searchText", searchText)
+                    }
+                    startActivity(intent)
                 } else
-                    Toast.makeText(this, "미입력", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
                 true // 이벤트 처리 완료
             } else {
                 false // 이벤트 미처리

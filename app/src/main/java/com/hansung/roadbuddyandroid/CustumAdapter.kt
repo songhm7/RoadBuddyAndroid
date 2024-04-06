@@ -1,6 +1,7 @@
 package com.hansung.roadbuddyandroid
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +23,11 @@ class CustomAdapter(context: Context, private val dataSource: MutableList<String
         val item = getItem(position)
         textViewItem.text = item
         textViewItem.setOnClickListener {
-            Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+            // 클릭된 아이템의 값을 넘기며 SearchResultActivity를 시작합니다.
+            val intent = Intent(context, SearchResultActivity::class.java).apply {
+                putExtra("searchText", item)
+            }
+            context.startActivity(intent)
         }
 
         buttonRemove.setOnClickListener {
