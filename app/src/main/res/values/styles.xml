@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/hansung_blue</item>
     </style>
 
+    <style name="TransparentStatusBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <!-- 기타 스타일 속성 -->
+    </style>
 </resources>
