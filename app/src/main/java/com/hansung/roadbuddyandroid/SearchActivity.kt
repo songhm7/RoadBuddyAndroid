@@ -4,14 +4,19 @@ import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
-class SearchActivity : AppCompatActivity(){
-    private lateinit var searchingBar : EditText
+class SearchActivity : AppCompatActivity() {
+    private lateinit var searchingBar: EditText
+    private lateinit var listViewRecent: ListView
+    private lateinit var adapterRecent: ArrayAdapter<String>
+    private lateinit var recentSearches: List<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -19,46 +24,42 @@ class SearchActivity : AppCompatActivity(){
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
             onBackPressed()
         }
-
+        listViewRecent = findViewById(R.id.listViewRecent)
         searchingBar = findViewById(R.id.searchingBar)
+        recentSearches = readSearchHistory()
 
-        val tvForTest1 = findViewById<TextView>(R.id.tv_forTest1)
-        val tvForTest2 = findViewById<TextView>(R.id.tv_forTest2)
-        val tvForTest3 = findViewById<TextView>(R.id.tv_forTest3)
+        // ArrayAdapter 초기화
+        adapterRecent = ArrayAdapter(this, android.R.layout.simple_list_item_1, recentSearches)
 
-        val recentSearches = readSearchHistory()
-        if (recentSearches.isNotEmpty()) {
-            tvForTest1.text = recentSearches.getOrElse(0) { "" }
-            tvForTest2.text = recentSearches.getOrElse(1) { "" }
-            tvForTest3.text = recentSearches.getOrElse(2) { "" }
-        }
+        // ListView에 ArrayAdapter 설정
+        listViewRecent.adapter = adapterRecent
 
         searchingBar.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // submit 동작을 처리하는 코드
                 val searchText = searchingBar.text.toString()
                 if (searchText.isNotEmpty()) {
-                    if(searchText == tvForTest1.text.toString()) {
-                        tvForTest1.text = searchText
-                    }
-                    else if(searchText == tvForTest2.text.toString()){
-                        tvForTest2.text = tvForTest1.text
-                        tvForTest1.text = searchText
-                    }
-                    else {
-                        tvForTest3.text = tvForTest2.text
-                        tvForTest2.text = tvForTest1.text
-                        tvForTest1.text = searchText
-                    }
-                    var newRecent : List<String> = listOf(tvForTest1.text.toString(),tvForTest2.text.toString(),tvForTest3.text.toString())
-                    writeSearchHistory(newRecent)
+                    val updatedHistory = manageHistory(recentSearches, searchText)
+                    adapterRecent.clear()
+                    adapterRecent.addAll(updatedHistory)
+                    adapterRecent.notifyDataSetChanged()
                     searchingBar.setText("")
-                }
+                    writeSearchHistory(updatedHistory)
+                    Toast.makeText(this, searchText, Toast.LENGTH_SHORT).show()
+                } else
+                    Toast.makeText(this, "미입력", Toast.LENGTH_SHORT).show()
                 true // 이벤트 처리 완료
             } else {
                 false // 이벤트 미처리
             }
         }
+
+        //리스트뷰의 각 아이템에 대한 클릭 리스너. 테스트를 위해 Toast메시지를 띄운다
+        listViewRecent.setOnItemClickListener { parent, view, position, id ->
+            val item = adapterRecent.getItem(position)
+            Toast.makeText(this, item, Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     //액티비티가 전환되면 자동으로 검색바에 커서가 올라가고 키보드가 올라오게끔 하는 메서드
@@ -80,17 +81,37 @@ class SearchActivity : AppCompatActivity(){
         if (!file.exists()) {
             file.createNewFile()
         }
-        return file.readLines().take(3)  // 최근 3개의 검색 기록만 가져옴
+        return file.readLines().take(5)  // 최근 5개의 검색 기록만 가져옴
     }
 
     private fun writeSearchHistory(searches: List<String>) {
         val file = File(filesDir, "recent.txt")
         file.writeText(searches.joinToString("\n"))
     }
+
     private fun deleteSearchHistory() {
         val file = File(filesDir, "recent.txt")
         if (file.exists()) {
             file.delete()
         }
+    }
+
+    //newRecord에 대한 중복처리를 거쳐 리스트를 반환
+    private fun manageHistory(history: List<String>, newRecord: String): List<String> {
+        val tmpHistory = history.toMutableList() // 기존 목록을 복사하여 임시 MutableList 생성
+
+        if (newRecord.isNotEmpty()) {
+            var index = tmpHistory.indexOf(newRecord)
+            if (index != -1) {
+                // 기존 기록이 있다면 해당 기록 삭제
+                tmpHistory.removeAt(index)
+            } else if (tmpHistory.size >= 5) {
+                // 목록이 3개 이상이면 가장 오래된 기록 삭제
+                tmpHistory.removeAt(tmpHistory.size - 1)
+            }
+            // 새 기록을 맨 앞에 추가
+            tmpHistory.add(0, newRecord)
+        }
+        return tmpHistory.toList() // 임시 MutableList를 다시 List로 변환
     }
 }
