@@ -35,6 +35,9 @@
         <activity android:name=".SearchResultActivity"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name=".PlaceViewActivity"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>

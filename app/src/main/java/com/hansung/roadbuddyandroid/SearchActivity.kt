@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
         if (!file.exists()) {
             file.createNewFile()
         }
-        return file.readLines().take(5)  // 최근 5개의 검색 기록만 가져옴
+        return file.readLines().take(10)  // 최근 10개의 검색 기록만 가져옴
     }
 
     private fun writeSearchHistory(searches: List<String>) {
@@ -115,7 +115,7 @@ class SearchActivity : AppCompatActivity() {
                 // 기존 기록이 있다면 해당 기록 삭제
                 tmpHistory.removeAt(index)
             } else if (tmpHistory.size >= 10) {
-                // 목록이 5개 이상이면 가장 오래된 기록 삭제
+                // 목록이 10개 이상이면 가장 오래된 기록 삭제
                 tmpHistory.removeAt(tmpHistory.size - 1)
             }
             // 새 기록을 맨 앞에 추가
