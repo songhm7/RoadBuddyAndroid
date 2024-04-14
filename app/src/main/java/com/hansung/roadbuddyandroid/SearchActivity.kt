@@ -30,7 +30,7 @@ class SearchActivity : AppCompatActivity() {
         recentSearches = readSearchHistory()
 
         // ArrayAdapter 초기화
-        val adapterRecent = CustomAdapter(this, ArrayList(recentSearches)) {
+        val adapterRecent = RecentAdapter(this, ArrayList(recentSearches)) {
             writeSearchHistory(it)
         }
 
@@ -114,7 +114,7 @@ class SearchActivity : AppCompatActivity() {
             if (index != -1) {
                 // 기존 기록이 있다면 해당 기록 삭제
                 tmpHistory.removeAt(index)
-            } else if (tmpHistory.size >= 5) {
+            } else if (tmpHistory.size >= 10) {
                 // 목록이 5개 이상이면 가장 오래된 기록 삭제
                 tmpHistory.removeAt(tmpHistory.size - 1)
             }
