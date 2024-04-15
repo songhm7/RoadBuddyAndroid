@@ -79,7 +79,7 @@ class SearchResultActivity : AppCompatActivity() {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
                     val responseBody = response.body!!.string()
-                    Log.d("응답확인", responseBody)
+                    //Log.d("응답확인", responseBody)
 
                     // UI 업데이트는 메인 스레드에서 수행
                     withContext(Dispatchers.Main) {
@@ -90,7 +90,7 @@ class SearchResultActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SearchResultActivity, "네트워크 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                 }
-                Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
+                //Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
             }
         }
     }

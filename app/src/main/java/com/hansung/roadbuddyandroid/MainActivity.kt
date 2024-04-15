@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val intent = Intent(this, SearchActivity::class.java)
             startActivity(intent)
         }
-
     }
 
 
@@ -107,7 +106,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 마커 추가
         mMap.addMarker(MarkerOptions().position(hansung).title("한성대학교"))
         // 지도 이동
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hansung, initialZoomLevel))
+        if (intent.hasExtra("latitude") && intent.hasExtra("longitude")) {
+            val latitude = intent.getDoubleExtra("latitude", 0.0)
+            val longitude = intent.getDoubleExtra("longitude", 0.0)
+            val locationFromPVA = LatLng(latitude, longitude)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationFromPVA, initialZoomLevel))
+        }
+        else mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hansung, initialZoomLevel))
 
     }
 
@@ -187,7 +192,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 for (location in locationResult.locations) {
                     // 여기서 위치 정보를 사용
                     curLocation = LatLng(location.latitude, location.longitude)
-
+                    Log.d("위치정보업데이트","${location.latitude}, ${location.longitude}")
                 }
             }
         }
