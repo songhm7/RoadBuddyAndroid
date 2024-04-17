@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_start_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="출발지 : "
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_end_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="도착지 : "
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_start_label" />
+
+    <TextView
+        android:id="@+id/tv_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/hansung_skyBlue"
+        android:text="TEST START POINT"
+        android:textColor="@color/hansung_blue"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_start_label"
+        app:layout_constraintStart_toEndOf="@id/tv_start_label" />
+
+    <TextView
+        android:id="@+id/tv_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/hansung_skyBlue"
+        android:text="TEST END POINT"
+        android:textColor="@color/hansung_blue"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_end_label"
+        app:layout_constraintStart_toEndOf="@id/tv_end_label" />
+
+    <Button
+        android:id="@+id/button_exchange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:rotation="90"
+        android:text="교환"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_path_make_begin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="5dp"
+        android:text="길찾기"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_end" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,9 +9,12 @@ import android.widget.TextView
 import android.content.Intent
 
 
-class SearchResultAdapter(context: Context, resource: Int, list: List<String>) :
-    ArrayAdapter<String>(context, resource, list) {
-
+class SearchResultAdapter(context: Context,
+                          resource: Int,
+                          list: List<String>,
+                          private val startPoint: String = "출발지미정",
+                          private val endPoint: String = "도착지미정")
+    : ArrayAdapter<String>(context, resource, list) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val view = convertView ?: inflater.inflate(R.layout.list_search_result_item, parent, false)
@@ -23,9 +26,10 @@ class SearchResultAdapter(context: Context, resource: Int, list: List<String>) :
         view.setOnClickListener {
             val intent = Intent(context, PlaceViewActivity::class.java)
             intent.putExtra("selectedPlace", itemText)
+            if (startPoint != "출발지미정") intent.putExtra("startPoint", startPoint)
+            if (endPoint != "도착지미정") intent.putExtra("endPoint", endPoint)
             context.startActivity(intent)
         }
-
         return view
     }
 }

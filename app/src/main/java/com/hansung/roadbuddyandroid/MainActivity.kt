@@ -102,9 +102,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        checkLocationPermission()
 
-        // 마커 추가
-        mMap.addMarker(MarkerOptions().position(hansung).title("한성대학교"))
         // 지도 이동
         if (intent.hasExtra("latitude") && intent.hasExtra("longitude")) {
             val latitude = intent.getDoubleExtra("latitude", 0.0)
@@ -112,7 +111,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val locationFromPVA = LatLng(latitude, longitude)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationFromPVA, initialZoomLevel))
         }
-        else mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hansung, initialZoomLevel))
+        else//위치정보를 가져오는데는 시간이 걸려 인터페이스 구성이 먼저이며
+            //최초실행시 위치권한을 얻기 전이므로 디폴트 위치를 설정해둘 필요가 있음
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hansung, initialZoomLevel))
 
     }
 
@@ -139,6 +140,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         Log.d("checkLocation 현위치가져오기성공",
                             "${location.latitude}, ${location.longitude}"
                         )
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, initialZoomLevel))
                     } else {
                         Log.d("checkLocationPermission", "location null값 발생")
                     }

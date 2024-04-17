@@ -24,6 +24,8 @@ class SearchResultActivity : AppCompatActivity() {
     private lateinit var searchBar2: EditText
     private lateinit var client: OkHttpClient
     private lateinit var listView : ListView
+    private var startPoint = "출발지미정"
+    private var endPoint = "도착지미정"
 
     // Basic 인증을 위한 사용자 이름과 비밀번호 설정
     private val username = "user"
@@ -37,6 +39,10 @@ class SearchResultActivity : AppCompatActivity() {
 
         // SearchActivity에서 전달된 searchText를 변수에 저장
         searchText = intent.getStringExtra("searchText")!!
+        if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
+        if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
+        Log.d("SearchResult startPoint", startPoint)
+        Log.d("SearchResult endPoint", endPoint)
 
         searchBar2 = findViewById(R.id.searchingBar2)
         searchBar2.setText(searchText)
@@ -115,7 +121,7 @@ class SearchResultActivity : AppCompatActivity() {
 
             // UI 스레드에서 리스트뷰에 데이터 설정
             runOnUiThread {
-                val adapter = SearchResultAdapter(this, R.layout.list_search_result_item, firstTermsList)
+                val adapter = SearchResultAdapter(this, R.layout.list_search_result_item, firstTermsList,startPoint,endPoint)
                 listView.adapter = adapter
             }
         }

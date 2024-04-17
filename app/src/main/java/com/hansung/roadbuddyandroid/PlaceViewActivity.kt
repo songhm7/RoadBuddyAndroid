@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -31,7 +32,8 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
     private val username = "user"
     private val password = "4fd3fcbb-4825-4fd0-a28b-f31b1d4ed718"
     private val hansung = LatLng(37.582701, 127.010274)
-
+    private var startPoint = "출발지미정"
+    private var endPoint = "도착지미정"
     private lateinit var credentials: String
     private lateinit var client: OkHttpClient
     private lateinit var placeName : String
@@ -45,6 +47,10 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_view)
+        if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
+        if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
+        Log.d("PlaceView startPoint", startPoint)
+        Log.d("PlaceView endPoint", endPoint)
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
             onBackPressed()
         }
@@ -71,6 +77,21 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
         client = OkHttpClient()
         credentials = Credentials.basic(username, password)
         makeNetworkRequest(placeName)
+
+        findViewById<Button>(R.id.button_start_point).setOnClickListener{
+            val intent = Intent(this, PathMakeActivity::class.java).apply {
+                putExtra("startPoint", placeName)
+                putExtra("endPoint", endPoint)
+            }
+            startActivity(intent)
+        }
+        findViewById<Button>(R.id.button_end_point).setOnClickListener{
+            val intent = Intent(this, PathMakeActivity::class.java).apply {
+                putExtra("endPoint", placeName)
+                putExtra("startPoint", startPoint)
+            }
+            startActivity(intent)
+        }
 
     }
     private fun makeNetworkRequest(searchQuery: String) {

@@ -18,6 +18,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchingBar: EditText
     private lateinit var listViewRecent: ListView
     private lateinit var recentSearches: List<String>
+    private var startPoint = "출발지미정"
+    private var endPoint = "도착지미정"
+    private lateinit var adapterRecent : RecentAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -30,9 +33,13 @@ class SearchActivity : AppCompatActivity() {
         recentSearches = readSearchHistory()
 
         // ArrayAdapter 초기화
-        val adapterRecent = RecentAdapter(this, ArrayList(recentSearches)) {
-            writeSearchHistory(it)
-        }
+        adapterRecent = RecentAdapter(
+            context = this,
+            dataSource = ArrayList(recentSearches),
+            onItemRemoved = { writeSearchHistory(it) },
+            startPoint = startPoint,
+            endPoint = endPoint
+        )
 
         // ListView에 ArrayAdapter 설정
         listViewRecent.adapter = adapterRecent
@@ -51,9 +58,12 @@ class SearchActivity : AppCompatActivity() {
                     adapterRecent.notifyDataSetChanged()
 
                     // SearchResultActivity로 이동
-                    val intent = Intent(this, SearchResultActivity::class.java).apply {
-                        putExtra("searchText", searchText)
-                    }
+                    val intent = Intent(this, SearchResultActivity::class.java)
+                    intent.putExtra("searchText", searchText)
+                    if(startPoint != "출발지미정")
+                        intent.putExtra("startPoint",startPoint)
+                    if(endPoint != "도착지미정")
+                        intent.putExtra("endPoint",endPoint)
                     startActivity(intent)
                 } else
                     Toast.makeText(this, "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
@@ -122,5 +132,17 @@ class SearchActivity : AppCompatActivity() {
             tmpHistory.add(0, newRecord)
         }
         return tmpHistory.toList() // 임시 MutableList를 다시 List로 변환
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)  // 최신 인텐트로 업데이트
+
+        // startPoint와 endPoint를 업데이트
+        if (intent?.hasExtra("startPoint") == true) startPoint = intent.getStringExtra("startPoint")!!
+        if (intent?.hasExtra("endPoint") == true) endPoint = intent.getStringExtra("endPoint")!!
+        Log.d("Search startPoint", startPoint)
+        Log.d("Search endPoint", endPoint)
+        adapterRecent.updateEndpoints(startPoint, endPoint)
     }
 }
