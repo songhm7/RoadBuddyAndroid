@@ -19,12 +19,8 @@ class PathMakeActivity : AppCompatActivity() {
         tvStart = findViewById(R.id.tv_start)
         tvEnd = findViewById(R.id.tv_end)
 
-        if (intent.hasExtra("startPoint")) {
-            startPoint = intent.getStringExtra("startPoint")!!
-        }
-        if (intent.hasExtra("endPoint")) {
-            endPoint = intent.getStringExtra("endPoint")!!
-        }
+        if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
+        if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
 
         tvStart.setText(startPoint)
         tvEnd.setText(endPoint)

@@ -1,18 +1,42 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <TextView
-        android:paddingTop="15dp"
-        android:paddingStart="15dp"
         android:id="@+id/textViewItemSearchResult"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
+        android:paddingStart="15dp"
+        android:paddingTop="15dp"
+        android:text="Example Item"
         android:textSize="20sp"
-        android:text="Example Item" />
+        app:layout_constraintEnd_toStartOf="@+id/textViewCategoryDistance"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewAddressSearchResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="15dp"
+        android:text="example address"
+        android:textColor="#888888"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@id/textViewItemSearchResult"
+        app:layout_constraintTop_toBottomOf="@+id/textViewItemSearchResult" />
+
+    <TextView
+        android:id="@+id/textViewCategoryDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="카테고리\nnnkm"
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textViewItemSearchResult"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

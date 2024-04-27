@@ -94,7 +94,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //검색창에 커서올리면 액티비티 이동
         searchingBar.setOnClickListener {
+            val curLat = curLocation.latitude
+            val curLon = curLocation.longitude
             val intent = Intent(this, SearchActivity::class.java)
+            Log.d("curLat","$curLat")
+            Log.d("curLon","$curLon")
+            intent.putExtra("curLat",curLat)
+            intent.putExtra("curLon",curLon)
             startActivity(intent)
         }
     }
@@ -109,6 +115,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             val latitude = intent.getDoubleExtra("latitude", 0.0)
             val longitude = intent.getDoubleExtra("longitude", 0.0)
             val locationFromPVA = LatLng(latitude, longitude)
+            Log.d("인텐트에서 받은 정보","$latitude, $longitude")
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(locationFromPVA, initialZoomLevel))
         }
         else//위치정보를 가져오는데는 시간이 걸려 인터페이스 구성이 먼저이며
@@ -137,10 +144,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                     if (location != null) {
                         curLocation = LatLng(location.latitude, location.longitude)
                         // 위치 정보 사용
-                        Log.d("checkLocation 현위치가져오기성공",
+                        Log.d("checkLocation 현위치가져오기성공 ",
                             "${location.latitude}, ${location.longitude}"
                         )
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, initialZoomLevel))
+                        if (!intent.hasExtra("latitude") || !intent.hasExtra("longitude"))
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation, initialZoomLevel))
                     } else {
                         Log.d("checkLocationPermission", "location null값 발생")
                     }

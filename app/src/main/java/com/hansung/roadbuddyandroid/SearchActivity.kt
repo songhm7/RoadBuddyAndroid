@@ -21,9 +21,14 @@ class SearchActivity : AppCompatActivity() {
     private var startPoint = "출발지미정"
     private var endPoint = "도착지미정"
     private lateinit var adapterRecent : RecentAdapter
+    private var curLat : Double = 0.0
+    private var curLon : Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        curLat = intent.getDoubleExtra("curLat",0.0)
+        curLon = intent.getDoubleExtra("curLon",0.0)
 
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
             onBackPressed()
@@ -38,7 +43,9 @@ class SearchActivity : AppCompatActivity() {
             dataSource = ArrayList(recentSearches),
             onItemRemoved = { writeSearchHistory(it) },
             startPoint = startPoint,
-            endPoint = endPoint
+            endPoint = endPoint,
+            curLat = curLat,
+            curLon = curLon
         )
 
         // ListView에 ArrayAdapter 설정
@@ -60,6 +67,8 @@ class SearchActivity : AppCompatActivity() {
                     // SearchResultActivity로 이동
                     val intent = Intent(this, SearchResultActivity::class.java)
                     intent.putExtra("searchText", searchText)
+                    intent.putExtra("curLat",curLat)
+                    intent.putExtra("curLon",curLon)
                     if(startPoint != "출발지미정")
                         intent.putExtra("startPoint",startPoint)
                     if(endPoint != "도착지미정")

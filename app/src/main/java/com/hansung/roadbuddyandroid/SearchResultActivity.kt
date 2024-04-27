@@ -1,6 +1,5 @@
 package com.hansung.roadbuddyandroid
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.EditorInfo
@@ -13,9 +12,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Credentials
 import org.json.JSONObject
 import java.io.IOException
 
@@ -26,10 +25,12 @@ class SearchResultActivity : AppCompatActivity() {
     private lateinit var listView : ListView
     private var startPoint = "출발지미정"
     private var endPoint = "도착지미정"
+    private var curLat : Double = 0.0
+    private var curLon : Double = 0.0
 
     // Basic 인증을 위한 사용자 이름과 비밀번호 설정
     private val username = "user"
-    private val password = "4fd3fcbb-4825-4fd0-a28b-f31b1d4ed718"
+    private val password = getString(R.string.API_KEY)
     private lateinit var credentials: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +40,8 @@ class SearchResultActivity : AppCompatActivity() {
 
         // SearchActivity에서 전달된 searchText를 변수에 저장
         searchText = intent.getStringExtra("searchText")!!
+        curLat = intent.getDoubleExtra("curLat",0.0)
+        curLon = intent.getDoubleExtra("curLon",0.0)
         if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
         if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
         Log.d("SearchResult startPoint", startPoint)
@@ -72,7 +75,7 @@ class SearchResultActivity : AppCompatActivity() {
     }
 
     private fun makeNetworkRequest(searchQuery: String) {
-        val url = "http://3.25.65.146:8080/maps/locations?input=$searchQuery"
+        val url = "http://3.25.65.146:8080/maps/locations?query=$searchQuery&coordinate.latitude=$curLat&coordinate.longitude=$curLon"
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -85,7 +88,7 @@ class SearchResultActivity : AppCompatActivity() {
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
 
                     val responseBody = response.body!!.string()
-                    //Log.d("응답확인", responseBody)
+                    Logr.d("SR응답확인", responseBody)
 
                     // UI 업데이트는 메인 스레드에서 수행
                     withContext(Dispatchers.Main) {
@@ -96,35 +99,54 @@ class SearchResultActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SearchResultActivity, "네트워크 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                 }
-                //Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
+                Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
             }
         }
     }
 
     private fun updateUI(responseData: String) {
         val jsonResponse = JSONObject(responseData)
-        val status = jsonResponse.getJSONObject("data").getString("status")
+        val dataObject = jsonResponse.optJSONObject("data")
 
-        if (status == "ZERO_RESULTS") {
-            // 검색 결과가 없을 경우
-            Toast.makeText(this, "일치하는 결과가 없습니다.", Toast.LENGTH_LONG).show()
-        } else {
-            val predictions = jsonResponse.getJSONObject("data").getJSONArray("predictions")
-            val firstTermsList = mutableListOf<String>()
+        if(dataObject?.optJSONArray("items") == null || dataObject.getJSONArray("items").length() ==0 ){
+            //검색 결과가 없거나, items 배열이 비었을 경우
+            Toast.makeText(this, "일치하는 결과가 없거나 오류가 발생했습니다",Toast.LENGTH_SHORT).show()
+        } else{
+            val items = dataObject.getJSONArray("items")
+            val placesList = mutableListOf<Place>()
+            for(i in 0 until items.length()){
+                val item = items.getJSONObject(i)
+                val geocoding = item.getJSONObject("geocoding")
+                val addresses = geocoding.getJSONArray("addresses").getJSONObject(0)
 
-            // predictions 배열에서 각 요소의 'terms' 배열의 첫 번째 요소 추출
-            for (i in 0 until predictions.length()) {
-                val prediction = predictions.getJSONObject(i)
-                val firstTermValue = prediction.getJSONArray("terms").getJSONObject(0).getString("value")
-                firstTermsList.add(firstTermValue)
+                val name = item.getString("title").replace("<b>","").replace("</b>","") //HTML태그제거
+                val address = item.getString("address")
+                val category = item.getString("category")
+                val latitude = addresses.getDouble("y")
+                val longitude = addresses.getDouble("x")
+                val distance = addresses.getDouble("distance")
+
+                //Place 객체 생성
+                val place = Place(name, address, category, latitude, longitude, distance)
+                placesList.add(place)
             }
-
             // UI 스레드에서 리스트뷰에 데이터 설정
             runOnUiThread {
-                val adapter = SearchResultAdapter(this, R.layout.list_search_result_item, firstTermsList,startPoint,endPoint)
+                val adapter = SearchResultAdapter(this, R.layout.list_search_result_item, placesList, startPoint, endPoint)
                 listView.adapter = adapter
             }
         }
     }
 
+}
+object Logr {
+    fun d(tag: String, msg: String) {
+        val maxLogSize = 3300
+        for (i in 0..msg.length / maxLogSize) {
+            val start = i * maxLogSize
+            var end = (i + 1) * maxLogSize
+            end = if (end > msg.length) msg.length else end
+            Log.d(tag, msg.substring(start, end))
+        }
+    }
 }

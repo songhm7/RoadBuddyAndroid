@@ -14,7 +14,9 @@ class RecentAdapter(context: Context,
                     private val dataSource: MutableList<String>,
                     private val onItemRemoved: (List<String>) -> Unit,
                     private var startPoint: String = "출발지미정",
-                    private var endPoint: String = "도착지미정"
+                    private var endPoint: String = "도착지미정",
+                    private var curLat: Double,
+                    private var curLon: Double
     ) : ArrayAdapter<String>(context, R.layout.list_item, dataSource) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -32,6 +34,8 @@ class RecentAdapter(context: Context,
                 putExtra("searchText", item)
                 Log.d("RecentAdapter startPoint", startPoint)
                 Log.d("RecentAdapter endPoint", endPoint)
+                putExtra("curLat",curLat)
+                putExtra("curLon",curLon)
                 if (startPoint != "출발지미정") putExtra("startPoint", startPoint)
                 if (endPoint != "도착지미정") putExtra("endPoint", endPoint)
             }
