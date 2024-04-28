@@ -67,6 +67,9 @@ class PathMakeActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_path_make_begin).setOnClickListener {
             if(startPoint.name=="출발지미정"||endPoint.name=="도착지미정")
                 Toast.makeText(this@PathMakeActivity, "출발지와 도착지를 모두 설정해주세요", Toast.LENGTH_LONG).show()
+            else if(startPoint.name == endPoint.name){
+                Toast.makeText(this@PathMakeActivity, "출발지와 도착지가 같습니다", Toast.LENGTH_LONG).show()
+            }
             else {
                 makeNetworkRequest(startPoint, endPoint)
                 showFragment(BusFragment.newInstance())

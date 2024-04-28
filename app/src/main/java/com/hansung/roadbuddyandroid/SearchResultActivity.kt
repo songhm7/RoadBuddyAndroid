@@ -2,10 +2,12 @@ package com.hansung.roadbuddyandroid
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
@@ -21,6 +23,7 @@ import java.io.IOException
 class SearchResultActivity : AppCompatActivity() {
     private lateinit var searchText: String
     private lateinit var searchBar2: EditText
+    private lateinit var loadingMessage: TextView
     private lateinit var client: OkHttpClient
     private lateinit var listView : ListView
     private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
@@ -50,11 +53,13 @@ class SearchResultActivity : AppCompatActivity() {
 
         searchBar2 = findViewById(R.id.searchingBar2)
         searchBar2.setText(searchText)
+        loadingMessage = findViewById(R.id.loadingMessage)
 
         client = OkHttpClient()
         credentials = Credentials.basic(username, password)
 
         // 네트워크 요청 실행
+        loadingMessage.visibility = View.VISIBLE  // 네트워크 요청 시작 시 로딩바표시
         makeNetworkRequest(searchText)
 
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
@@ -94,13 +99,14 @@ class SearchResultActivity : AppCompatActivity() {
                     // UI 업데이트는 메인 스레드에서 수행
                     withContext(Dispatchers.Main) {
                         updateUI(responseBody)
+                        loadingMessage.visibility = View.GONE  // 응답 처리 후 사라짐
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SearchResultActivity, "네트워크 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                 }
-                Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
+                Log.e("네트워크 에러", "요청 중 오류 발생: ${e.message}", e)
             }
         }
     }
@@ -109,9 +115,9 @@ class SearchResultActivity : AppCompatActivity() {
         val jsonResponse = JSONObject(responseData)
         val dataObject = jsonResponse.optJSONObject("data")
 
-        if(dataObject?.optJSONArray("items") == null || dataObject.getJSONArray("items").length() ==0 ){
+        if(dataObject?.optJSONArray("items") == null || dataObject.getJSONArray("items").length() == 0 ){
             //검색 결과가 없거나, items 배열이 비었을 경우
-            Toast.makeText(this, "일치하는 결과가 없거나 오류가 발생했습니다",Toast.LENGTH_SHORT).show()
+            Log.e("검색결과가 없거나 items배열이 비었음","검색결과가 없거나 items배열이 비었음")
         } else{
             val items = dataObject.getJSONArray("items")
             val placesList = mutableListOf<Place>()
