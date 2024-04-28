@@ -13,8 +13,8 @@ import android.widget.TextView
 class RecentAdapter(context: Context,
                     private val dataSource: MutableList<String>,
                     private val onItemRemoved: (List<String>) -> Unit,
-                    private var startPoint: String = "출발지미정",
-                    private var endPoint: String = "도착지미정",
+                    private var startPoint: Place,
+                    private var endPoint: Place,
                     private var curLat: Double,
                     private var curLon: Double
     ) : ArrayAdapter<String>(context, R.layout.list_item, dataSource) {
@@ -32,12 +32,12 @@ class RecentAdapter(context: Context,
             // 클릭된 아이템의 값을 넘기며 SearchResultActivity를 시작합니다.
             val intent = Intent(context, SearchResultActivity::class.java).apply {
                 putExtra("searchText", item)
-                Log.d("RecentAdapter startPoint", startPoint)
-                Log.d("RecentAdapter endPoint", endPoint)
+                Log.d("RecentAdapter startPoint", startPoint.name)
+                Log.d("RecentAdapter endPoint", endPoint.name)
                 putExtra("curLat",curLat)
                 putExtra("curLon",curLon)
-                if (startPoint != "출발지미정") putExtra("startPoint", startPoint)
-                if (endPoint != "도착지미정") putExtra("endPoint", endPoint)
+                if (startPoint.name != "출발지미정") putExtra("startPoint", startPoint)
+                if (endPoint.name != "도착지미정") putExtra("endPoint", endPoint)
             }
             context.startActivity(intent)
         }
@@ -56,7 +56,7 @@ class RecentAdapter(context: Context,
         return rowView
     }
 
-    fun updateEndpoints(newStartPoint: String, newEndPoint: String) {
+    fun updateEndpoints(newStartPoint: Place, newEndPoint: Place) {
         startPoint = newStartPoint
         endPoint = newEndPoint
     }

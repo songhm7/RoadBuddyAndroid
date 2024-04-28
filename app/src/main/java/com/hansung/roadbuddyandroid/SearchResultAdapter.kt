@@ -12,8 +12,8 @@ import android.widget.TextView
 class SearchResultAdapter(context: Context,
                           resource: Int,
                           list: List<Place>,
-                          private val startPoint: String = "출발지미정",
-                          private val endPoint: String = "도착지미정")
+                          private val startPoint: Place,
+                          private val endPoint: Place)
     : ArrayAdapter<Place>(context, resource, list) {
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -38,8 +38,8 @@ class SearchResultAdapter(context: Context,
         view.setOnClickListener {
             val intent = Intent(context, PlaceViewActivity::class.java)
             intent.putExtra("selectedPlace",item)
-            if (startPoint != "출발지미정") intent.putExtra("startPoint", startPoint)
-            if (endPoint != "도착지미정") intent.putExtra("endPoint", endPoint)
+            if (startPoint.name != "출발지미정") intent.putExtra("startPoint", startPoint)
+            if (endPoint.name != "도착지미정") intent.putExtra("endPoint", endPoint)
             context.startActivity(intent)
         }
         return view

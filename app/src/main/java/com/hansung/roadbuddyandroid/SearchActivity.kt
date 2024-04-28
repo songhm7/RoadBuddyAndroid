@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ListView
@@ -18,8 +17,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchingBar: EditText
     private lateinit var listViewRecent: ListView
     private lateinit var recentSearches: List<String>
-    private var startPoint = "출발지미정"
-    private var endPoint = "도착지미정"
+    private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
+    private var endPoint = Place("도착지미정","","",0.0,0.0,0.0)
     private lateinit var adapterRecent : RecentAdapter
     private var curLat : Double = 0.0
     private var curLon : Double = 0.0
@@ -69,9 +68,9 @@ class SearchActivity : AppCompatActivity() {
                     intent.putExtra("searchText", searchText)
                     intent.putExtra("curLat",curLat)
                     intent.putExtra("curLon",curLon)
-                    if(startPoint != "출발지미정")
+                    if(startPoint.name != "출발지미정")
                         intent.putExtra("startPoint",startPoint)
-                    if(endPoint != "도착지미정")
+                    if(endPoint.name != "도착지미정")
                         intent.putExtra("endPoint",endPoint)
                     startActivity(intent)
                 } else
@@ -148,10 +147,10 @@ class SearchActivity : AppCompatActivity() {
         setIntent(intent)  // 최신 인텐트로 업데이트
 
         // startPoint와 endPoint를 업데이트
-        if (intent?.hasExtra("startPoint") == true) startPoint = intent.getStringExtra("startPoint")!!
-        if (intent?.hasExtra("endPoint") == true) endPoint = intent.getStringExtra("endPoint")!!
-        Log.d("Search startPoint", startPoint)
-        Log.d("Search endPoint", endPoint)
+        if (intent?.hasExtra("startPoint") == true) startPoint = intent.getParcelableExtra("startPoint")!!
+        if (intent?.hasExtra("endPoint") == true) endPoint = intent.getParcelableExtra("endPoint")!!
+        Log.d("Search startPoint", startPoint.name)
+        Log.d("Search endPoint", endPoint.name)
         adapterRecent.updateEndpoints(startPoint, endPoint)
     }
 }

@@ -23,18 +23,19 @@ class SearchResultActivity : AppCompatActivity() {
     private lateinit var searchBar2: EditText
     private lateinit var client: OkHttpClient
     private lateinit var listView : ListView
-    private var startPoint = "출발지미정"
-    private var endPoint = "도착지미정"
+    private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
+    private var endPoint = Place("도착지미정","","",0.0,0.0,0.0)
     private var curLat : Double = 0.0
     private var curLon : Double = 0.0
 
     // Basic 인증을 위한 사용자 이름과 비밀번호 설정
     private val username = "user"
-    private val password = getString(R.string.API_KEY)
+    private lateinit var password : String
     private lateinit var credentials: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        password = getString(R.string.API_KEY)
         setContentView(R.layout.activity_search_result)
         listView = findViewById(R.id.listViewSearchResult)
 
@@ -42,10 +43,10 @@ class SearchResultActivity : AppCompatActivity() {
         searchText = intent.getStringExtra("searchText")!!
         curLat = intent.getDoubleExtra("curLat",0.0)
         curLon = intent.getDoubleExtra("curLon",0.0)
-        if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
-        if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
-        Log.d("SearchResult startPoint", startPoint)
-        Log.d("SearchResult endPoint", endPoint)
+        if (intent.hasExtra("startPoint")) startPoint = intent.getParcelableExtra("startPoint")!!
+        if (intent.hasExtra("endPoint")) endPoint = intent.getParcelableExtra("endPoint")!!
+        Log.d("SearchResult startPoint", startPoint.name)
+        Log.d("SearchResult endPoint", endPoint.name)
 
         searchBar2 = findViewById(R.id.searchingBar2)
         searchBar2.setText(searchText)

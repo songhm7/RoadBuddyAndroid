@@ -18,8 +18,8 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
     // Basic 인증을 위한 사용자 이름과 비밀번호 설정
 
     private val curLocation = LatLng(37.582701, 127.010274)
-    private var startPoint = "출발지미정"
-    private var endPoint = "도착지미정"
+    private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
+    private var endPoint = Place("도착지미정","","",0.0,0.0,0.0)
     private lateinit var locationFromPVA : LatLng
     private lateinit var mMap: GoogleMap
     private lateinit var mapFragment : SupportMapFragment
@@ -29,10 +29,10 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_place_view)
-        if (intent.hasExtra("startPoint")) startPoint = intent.getStringExtra("startPoint")!!
-        if (intent.hasExtra("endPoint")) endPoint = intent.getStringExtra("endPoint")!!
-        Log.d("PlaceView startPoint", startPoint)
-        Log.d("PlaceView endPoint", endPoint)
+        if (intent.hasExtra("startPoint")) startPoint = intent.getParcelableExtra("startPoint")!!
+        if (intent.hasExtra("endPoint")) endPoint = intent.getParcelableExtra("endPoint")!!
+        Log.d("PlaceView startPoint", startPoint.name)
+        Log.d("PlaceView endPoint", endPoint.name)
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
             onBackPressed()
         }
@@ -61,14 +61,14 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
 
         findViewById<Button>(R.id.button_start_point).setOnClickListener{
             val intent = Intent(this, PathMakeActivity::class.java).apply {
-                putExtra("startPoint", selectedPlace.name)
+                putExtra("startPoint", selectedPlace)
                 putExtra("endPoint", endPoint)
             }
             startActivity(intent)
         }
         findViewById<Button>(R.id.button_end_point).setOnClickListener{
             val intent = Intent(this, PathMakeActivity::class.java).apply {
-                putExtra("endPoint", selectedPlace.name)
+                putExtra("endPoint", selectedPlace)
                 putExtra("startPoint", startPoint)
             }
             startActivity(intent)

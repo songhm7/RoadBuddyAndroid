@@ -23,7 +23,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -191,8 +190,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun setupLocationUpdates() {
         locationRequest = LocationRequest.create()!!.apply {
-            interval = 10000  // 10초 간격으로 업데이트 (필요에 따라 조정)
-            fastestInterval = 5000  // 가장 빠른 간격 (필요에 따라 조정)
+            interval = 5000  // 10초 간격으로 업데이트 (필요에 따라 조정)
+            fastestInterval = 2000  // 가장 빠른 간격 (필요에 따라 조정)
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 

@@ -66,5 +66,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_end" />
 
+    <TextView
+        android:id="@+id/tvbutton_bus"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/hansung_skyBlue"
+        android:text="대중교통"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_end_label" />
+
+    <TextView
+        android:id="@+id/tvbutton_texi"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/hansung_skyBlue"
+        android:text="택시"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/tvbutton_bus"
+        app:layout_constraintTop_toBottomOf="@id/tv_end_label" />
+
+    <fragment
+        android:id="@+id/fragment_mpxml"
+        android:name="com.hansung.roadbuddyandroid.fragment.EmptyFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/button_path_make_begin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
