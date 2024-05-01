@@ -106,7 +106,7 @@ class SearchResultActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(this@SearchResultActivity, "네트워크 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
                 }
-                Log.e("네트워크 에러", "요청 중 오류 발생: ${e.message}", e)
+                Log.e("SR네트워크 에러", "요청 중 오류 발생: ${e.message}", e)
             }
         }
     }
@@ -118,6 +118,9 @@ class SearchResultActivity : AppCompatActivity() {
         if(dataObject?.optJSONArray("items") == null || dataObject.getJSONArray("items").length() == 0 ){
             //검색 결과가 없거나, items 배열이 비었을 경우
             Log.e("검색결과가 없거나 items배열이 비었음","검색결과가 없거나 items배열이 비었음")
+            runOnUiThread {
+                Toast.makeText(this, "검색 결과가 없습니다.", Toast.LENGTH_LONG).show()
+            }
         } else{
             val items = dataObject.getJSONArray("items")
             val placesList = mutableListOf<Place>()

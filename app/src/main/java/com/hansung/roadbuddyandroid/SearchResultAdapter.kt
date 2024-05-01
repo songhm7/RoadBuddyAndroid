@@ -27,7 +27,7 @@ class SearchResultAdapter(context: Context,
         val distanceDisplay = if (item.distance < 1000) {
             "${item.distance.toInt()}m"
         } else {
-            String.format("%.3fkm", item.distance / 1000)
+            String.format("%.2fkm", item.distance / 1000)
         }
         textViewItem.text = item.name
         textViewAddress.text = item.address

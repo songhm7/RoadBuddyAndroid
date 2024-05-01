@@ -9,6 +9,6 @@
         android:layout_height="match_parent"
         android:paddingTop="100dp"
         android:textSize="50sp"
-        android:text="testTextTaxi"
+        android:text="로딩 중..."
         android:textAlignment="center" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,6 @@ package com.hansung.roadbuddyandroid
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -11,14 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hansung.roadbuddyandroid.fragment.BusFragment
 import com.hansung.roadbuddyandroid.fragment.TaxiFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.Credentials
 import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.io.IOException
 
 class PathMakeActivity : AppCompatActivity() {
     private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
@@ -28,18 +20,12 @@ class PathMakeActivity : AppCompatActivity() {
     private lateinit var client: OkHttpClient
     private lateinit var tvbtnbus : TextView
     private lateinit var tvbtntexi : TextView
-    // Basic 인증을 위한 사용자 이름과 비밀번호 설정
-    private val username = "user"
-    private lateinit var password : String
-    private lateinit var credentials: String
     private lateinit var fragment : View
-    private lateinit var responseTMP : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_path)
-        password = getString(R.string.API_KEY)
-        client = OkHttpClient()
-        credentials = Credentials.basic(username, password)
+
 
         tvStart = findViewById(R.id.tv_start)
         tvEnd = findViewById(R.id.tv_end)
@@ -71,8 +57,7 @@ class PathMakeActivity : AppCompatActivity() {
                 Toast.makeText(this@PathMakeActivity, "출발지와 도착지가 같습니다", Toast.LENGTH_LONG).show()
             }
             else {
-                makeNetworkRequest(startPoint, endPoint)
-                showFragment(BusFragment.newInstance())
+                showFragment(BusFragment.newInstance(startPoint, endPoint))
                 tvbtnbus.visibility = View.VISIBLE
                 tvbtntexi.visibility = View.VISIBLE
             }
@@ -99,8 +84,8 @@ class PathMakeActivity : AppCompatActivity() {
             startActivity(intent)
         }
         tvbtnbus.setOnClickListener {
-            val fragment = BusFragment.newInstance()
-            fragment.setData(responseTMP)  // 데이터 설정
+            val fragment = BusFragment.newInstance(startPoint, endPoint)
+            showFragment(fragment)
             replaceFragment(fragment)
         }
         tvbtntexi.setOnClickListener {
@@ -109,39 +94,7 @@ class PathMakeActivity : AppCompatActivity() {
             replaceFragment(fragment)
         }
     }
-    private fun makeNetworkRequest(startPoint : Place, endPoint : Place) {
-        val url = "http://3.25.65.146:8080/maps/directions?origin.latitude=${startPoint.latitude}&origin.longitude=${startPoint.longitude}" +
-                "&destination.latitude=${endPoint.latitude}&destination.longitude=${endPoint.longitude}"
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val request = Request.Builder()
-                    .url(url)
-                    .header("Authorization", credentials)
-                    .build()
-
-                client.newCall(request).execute().use { response ->
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                    val responseBody = response.body!!.string()
-                    Logr.d("PM응답확인", responseBody)
-                    responseTMP = responseBody
-
-                    // UI 업데이트는 메인 스레드에서 수행
-                    withContext(Dispatchers.Main) {
-                        val fragment = BusFragment.newInstance()
-                        fragment.setData(responseBody)  // 데이터 설정
-                        replaceFragment(fragment)
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@PathMakeActivity, "네트워크 오류가 발생했습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
-                }
-                Log.e("네트워크 오류", "요청 중 오류 발생: ${e.message}")
-            }
-        }
-    }
     fun showFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.fragment_mpxml, fragment).commit()
     }
