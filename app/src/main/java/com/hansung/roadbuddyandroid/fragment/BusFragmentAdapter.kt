@@ -250,7 +250,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                 //생략하기
                 thirdImage.visibility = View.GONE
                 thirdTime.visibility = View.GONE
-                thirdText.text = "..."
+                thirdText.text = ". . ."
                 thirdText.setTextColor(Color.parseColor("#FFFFFF"))
                 thirdText.setBackgroundColor(Color.parseColor("#626466"))
 
