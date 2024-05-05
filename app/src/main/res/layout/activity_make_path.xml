@@ -5,91 +5,86 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_start_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="출발지 : "
-        android:textSize="30sp"
+        android:id="@+id/tv_start"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:background="#DDDDDD"
+        android:padding="5dp"
+        android:text="TEST START POINT"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@id/button_swap"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_end_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="도착지 : "
-        android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_start_label" />
-
-    <TextView
-        android:id="@+id/tv_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/hansung_skyBlue"
-        android:text="TEST START POINT"
-        android:textColor="@color/hansung_blue"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_start_label"
-        app:layout_constraintStart_toEndOf="@id/tv_start_label" />
 
     <TextView
         android:id="@+id/tv_end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/hansung_skyBlue"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="#DDDDDD"
+        android:padding="5dp"
         android:text="TEST END POINT"
-        android:textColor="@color/hansung_blue"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_end_label"
-        app:layout_constraintStart_toEndOf="@id/tv_end_label" />
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@id/button_swap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_start" />
 
-    <Button
-        android:id="@+id/button_exchange"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:rotation="90"
-        android:text="교환"
-        android:textSize="25sp"
+    <ImageButton
+        android:id="@+id/button_swap"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/rounded_corner"
+        android:padding="5dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/swap"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/tv_start" />
 
-    <Button
+    <ImageButton
         android:id="@+id/button_path_make_begin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="5dp"
-        android:text="길찾기"
-        android:textSize="20dp"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/rounded_corner"
+        android:scaleType="fitCenter"
+        android:src="@drawable/finder"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_end" />
+        app:layout_constraintTop_toTopOf="@id/tv_end" />
 
     <TextView
         android:id="@+id/tvbutton_bus"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="90dp"
         android:layout_marginTop="20dp"
         android:background="@color/hansung_skyBlue"
         android:text="대중교통"
+        android:textAlignment="center"
+        android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_end_label" />
+        app:layout_constraintTop_toBottomOf="@id/tv_end" />
 
     <TextView
         android:id="@+id/tvbutton_texi"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_width="100dp"
+        android:layout_height="35dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="90dp"
         android:background="@color/hansung_skyBlue"
         android:text="택시"
         android:textAlignment="center"
+        android:textColor="#000000"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@id/tvbutton_bus"
-        app:layout_constraintTop_toBottomOf="@id/tv_end_label" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_end" />
 
     <fragment
         android:id="@+id/fragment_mpxml"
@@ -98,6 +93,6 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_path_make_begin" />
+        app:layout_constraintTop_toBottomOf="@id/tvbutton_bus" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

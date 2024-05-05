@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -26,6 +27,7 @@ import java.io.IOException
 
 class BusFragment : Fragment() {
     private lateinit var textViewFragmentBus: TextView
+    private lateinit var loadingImage : ImageView
     private lateinit var client : OkHttpClient
     private val username = "user"
     private lateinit var password : String
@@ -43,6 +45,7 @@ class BusFragment : Fragment() {
         client = OkHttpClient()
         credentials = Credentials.basic(username, password)
         textViewFragmentBus = view.findViewById(R.id.textViewFragmentBus)
+        loadingImage = view.findViewById(R.id.ImageLoadingFB)
         BusListView = view.findViewById(R.id.ListViewBusFragment)
         arguments?.let {
             val startPoint = it.getParcelable<Place>("startPoint")
@@ -80,6 +83,7 @@ class BusFragment : Fragment() {
 
     fun updateUI(routes: List<Route>) {
         textViewFragmentBus.visibility = View.GONE
+        loadingImage.visibility = View.GONE
         val adapter = BusFragmentAdapter(requireContext(), routes)
         BusListView.adapter = adapter
         adapter.notifyDataSetChanged()

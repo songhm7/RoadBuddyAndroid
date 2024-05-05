@@ -3,21 +3,19 @@ package com.hansung.roadbuddyandroid
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.hansung.roadbuddyandroid.fragment.BusFragment
 import com.hansung.roadbuddyandroid.fragment.TaxiFragment
-import okhttp3.OkHttpClient
 
 class PathMakeActivity : AppCompatActivity() {
     private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
     private var endPoint = Place("도착지미정","","",0.0,0.0,0.0)
     private lateinit var tvStart: TextView
     private lateinit var tvEnd: TextView
-    private lateinit var client: OkHttpClient
     private lateinit var tvbtnbus : TextView
     private lateinit var tvbtntexi : TextView
     private lateinit var fragment : View
@@ -25,7 +23,6 @@ class PathMakeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_path)
-
 
         tvStart = findViewById(R.id.tv_start)
         tvEnd = findViewById(R.id.tv_end)
@@ -41,7 +38,7 @@ class PathMakeActivity : AppCompatActivity() {
 
         tvStart.setText(startPoint.name)
         tvEnd.setText(endPoint.name)
-        findViewById<Button>(R.id.button_exchange).setOnClickListener {
+        findViewById<ImageButton>(R.id.button_swap).setOnClickListener {
             val tmp = startPoint
             startPoint = endPoint
             endPoint = tmp
@@ -50,7 +47,7 @@ class PathMakeActivity : AppCompatActivity() {
             tvStart.setText(startPoint.name)
             tvEnd.setText(endPoint.name)
         }
-        findViewById<Button>(R.id.button_path_make_begin).setOnClickListener {
+        findViewById<ImageButton>(R.id.button_path_make_begin).setOnClickListener {
             if(startPoint.name=="출발지미정"||endPoint.name=="도착지미정")
                 Toast.makeText(this@PathMakeActivity, "출발지와 도착지를 모두 설정해주세요", Toast.LENGTH_LONG).show()
             else if(startPoint.name == endPoint.name){
@@ -58,6 +55,8 @@ class PathMakeActivity : AppCompatActivity() {
             }
             else {
                 showFragment(BusFragment.newInstance(startPoint, endPoint))
+                tvbtnbus.setBackgroundResource(R.drawable.deboss_effect)
+                tvbtntexi.setBackgroundResource(R.drawable.emboss_effect)
                 tvbtnbus.visibility = View.VISIBLE
                 tvbtntexi.visibility = View.VISIBLE
             }
@@ -87,11 +86,15 @@ class PathMakeActivity : AppCompatActivity() {
             val fragment = BusFragment.newInstance(startPoint, endPoint)
             showFragment(fragment)
             replaceFragment(fragment)
+            tvbtnbus.setBackgroundResource(R.drawable.deboss_effect)
+            tvbtntexi.setBackgroundResource(R.drawable.emboss_effect)
         }
         tvbtntexi.setOnClickListener {
             val fragment = TaxiFragment.newInstance()
             //fragment.setData(responseTaxiTMP)  // 데이터 설정
             replaceFragment(fragment)
+            tvbtnbus.setBackgroundResource(R.drawable.emboss_effect)
+            tvbtntexi.setBackgroundResource(R.drawable.deboss_effect)
         }
     }
 

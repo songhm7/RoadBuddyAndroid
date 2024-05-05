@@ -26,7 +26,7 @@
     <TextView
         android:id="@+id/firstText"
         android:background="@drawable/rounded_corner"
-        android:layout_width="45dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="10dp"
@@ -41,10 +41,10 @@
         android:id="@+id/firstToward"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/toward"
-        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/to_next"
+        app:layout_constraintStart_toEndOf="@id/firstText"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
         android:id="@+id/secondImage"
@@ -80,7 +80,7 @@
         android:layout_height="10dp"
         android:layout_marginStart="60dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/toward"
+        android:src="@drawable/to_next"
         app:layout_constraintStart_toEndOf="@id/firstToward"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
@@ -117,7 +117,7 @@
         android:layout_height="10dp"
         android:layout_marginStart="60dp"
         android:layout_marginTop="25dp"
-        android:src="@drawable/toward"
+        android:src="@drawable/to_next"
         app:layout_constraintStart_toEndOf="@id/secondToward"
         app:layout_constraintTop_toTopOf="parent" />
 

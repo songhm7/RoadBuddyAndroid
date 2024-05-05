@@ -46,14 +46,35 @@
         android:id="@+id/loadingMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="250dp"
-        android:text="로딩 중 ..."
+        android:paddingTop="180dp"
+        android:text="찾는 중 ..."
         android:textAlignment="center"
-        android:textSize="40sp"
         android:textColor="#888888"
-        android:visibility="gone"
+        android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/lineDivider" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/loadingImage"
+        android:layout_width="300dp"
+        android:layout_height="600dp"
+        android:scaleType="center"
+        android:paddingTop="200dp"
+        android:src="@drawable/turtle3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/failImage"
+        android:layout_width="300dp"
+        android:layout_height="600dp"
+        android:scaleType="center"
+        android:paddingTop="200dp"
+        android:src="@drawable/turtle6"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

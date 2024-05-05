@@ -59,15 +59,17 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
         val textViewBusDuration = view.findViewById<TextView>(R.id.textViewBusDuration)
 
         var arrivalTime = route.legs[0].arrivalTime.text
+        var departureTime = route.legs[0].departureTime.text
+
         if(arrivalTime.contains("AM"))
             arrivalTime = "오전 " + arrivalTime.replace("AM","").replace(" ","")
         if(arrivalTime.contains("PM"))
             arrivalTime = "오후 " + arrivalTime.replace("PM","").replace(" ","")
-        var departureTime = route.legs[0].departureTime.text
         if(departureTime.contains("AM"))
             departureTime = "오전 " + departureTime.replace("AM","").replace(" ","")
         if(departureTime.contains("PM"))
             departureTime = "오후 " + departureTime.replace("PM","").replace(" ","")
+
         textViewBusTime.text = "${arrivalTime} - ${departureTime}"
         textViewBusDuration.text = route.legs[0].duration.text
 
@@ -82,46 +84,46 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             1 -> {
                 // steps.size가 1일 때 실행할 코드
                 if (steps[0].travelMode == "WALKING"){
-                    firstText.visibility = View.GONE
+                    firstText.visibility = View.INVISIBLE
                     firstTime.text = steps[0].duration.text.replace("분","")
                     //TODO("시간 단위 응답 오는지 체크")
                 } else if(steps[0].travelMode == "TRANSIT"){
-                    firstImage.visibility = View.GONE
-                    firstTime.visibility = View.GONE
+                    firstImage.visibility = View.INVISIBLE
+                    firstTime.visibility = View.INVISIBLE
                     firstText.text = steps[0].transitDetails!!.line.shortName
                     firstText.setTextColor(Color.parseColor(steps[0].transitDetails!!.line.textColor))
                     firstText.setBackgroundColor(Color.parseColor(steps[0].transitDetails!!.line.color))
                 } else{
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
-                goneView(2); goneView(3); goneView(4)
-                firstToward.visibility = View.GONE
-                secondToward.visibility = View.GONE
-                thirdToward.visibility = View.GONE
+                INVISIBLEView(2); INVISIBLEView(3); INVISIBLEView(4)
+                firstToward.visibility = View.INVISIBLE
+                secondToward.visibility = View.INVISIBLE
+                thirdToward.visibility = View.INVISIBLE
             }
             2 -> {
                 // steps.size가 2일 때 실행할 코드
-                goneView(3); goneView(4)
-                secondToward.visibility = View.GONE
-                thirdToward.visibility = View.GONE
+                INVISIBLEView(3); INVISIBLEView(4)
+                secondToward.visibility = View.INVISIBLE
+                thirdToward.visibility = View.INVISIBLE
                 if (steps[0].travelMode == "WALKING"){
-                    firstText.visibility = View.GONE
+                    firstText.visibility = View.INVISIBLE
                     firstTime.text = steps[0].duration.text.replace("분","")
                 } else if(steps[0].travelMode == "TRANSIT"){
-                    firstImage.visibility = View.GONE
-                    firstTime.visibility = View.GONE
-                    firstText.text = steps[0].transitDetails!!.line.shortName
+                    firstImage.visibility = View.INVISIBLE
+                    firstTime.visibility = View.INVISIBLE
+                    firstText.text =  steps[0].transitDetails!!.line.shortName
                     firstText.setTextColor(Color.parseColor(steps[0].transitDetails!!.line.textColor))
                     firstText.setBackgroundColor(Color.parseColor(steps[0].transitDetails!!.line.color))
                 } else{
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[1].travelMode == "WALKING"){
-                    secondText.visibility = View.GONE
+                    secondText.visibility = View.INVISIBLE
                     secondTime.text = steps[1].duration.text.replace("분","")
                 } else if(steps[1].travelMode == "TRANSIT"){
-                    secondImage.visibility = View.GONE
-                    secondTime.visibility = View.GONE
+                    secondImage.visibility = View.INVISIBLE
+                    secondTime.visibility = View.INVISIBLE
                     secondText.text = steps[1].transitDetails!!.line.shortName
                     secondText.setTextColor(Color.parseColor(steps[1].transitDetails!!.line.textColor))
                     secondText.setBackgroundColor(Color.parseColor(steps[1].transitDetails!!.line.color))
@@ -131,14 +133,14 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             }
             3 -> {
                 // steps.size가 3일 때 실행할 코드
-                goneView(4)
-                thirdToward.visibility = View.GONE
+                INVISIBLEView(4)
+                thirdToward.visibility = View.INVISIBLE
                 if (steps[0].travelMode == "WALKING"){
-                    firstText.visibility = View.GONE
+                    firstText.visibility = View.INVISIBLE
                     firstTime.text = steps[0].duration.text.replace("분","")
                 } else if(steps[0].travelMode == "TRANSIT"){
-                    firstImage.visibility = View.GONE
-                    firstTime.visibility = View.GONE
+                    firstImage.visibility = View.INVISIBLE
+                    firstTime.visibility = View.INVISIBLE
                     firstText.text = steps[0].transitDetails!!.line.shortName
                     firstText.setTextColor(Color.parseColor(steps[0].transitDetails!!.line.textColor))
                     firstText.setBackgroundColor(Color.parseColor(steps[0].transitDetails!!.line.color))
@@ -146,11 +148,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[1].travelMode == "WALKING"){
-                    secondText.visibility = View.GONE
+                    secondText.visibility = View.INVISIBLE
                     secondTime.text = steps[1].duration.text.replace("분","")
                 } else if(steps[1].travelMode == "TRANSIT"){
-                    secondImage.visibility = View.GONE
-                    secondTime.visibility = View.GONE
+                    secondImage.visibility = View.INVISIBLE
+                    secondTime.visibility = View.INVISIBLE
                     secondText.text = steps[1].transitDetails!!.line.shortName
                     secondText.setTextColor(Color.parseColor(steps[1].transitDetails!!.line.textColor))
                     secondText.setBackgroundColor(Color.parseColor(steps[1].transitDetails!!.line.color))
@@ -158,11 +160,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[2].travelMode == "WALKING"){
-                    thirdText.visibility = View.GONE
+                    thirdText.visibility = View.INVISIBLE
                     thirdTime.text = steps[2].duration.text.replace("분","")
                 } else if(steps[2].travelMode == "TRANSIT"){
-                    thirdImage.visibility = View.GONE
-                    thirdTime.visibility = View.GONE
+                    thirdImage.visibility = View.INVISIBLE
+                    thirdTime.visibility = View.INVISIBLE
                     thirdText.text = steps[2].transitDetails!!.line.shortName
                     thirdText.setTextColor(Color.parseColor(steps[2].transitDetails!!.line.textColor))
                     thirdText.setBackgroundColor(Color.parseColor(steps[2].transitDetails!!.line.color))
@@ -173,11 +175,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             4 -> {
                 // steps.size가 4일 때 실행할 코드
                 if (steps[0].travelMode == "WALKING"){
-                    firstText.visibility = View.GONE
+                    firstText.visibility = View.INVISIBLE
                     firstTime.text = steps[0].duration.text.replace("분","")
                 } else if(steps[0].travelMode == "TRANSIT"){
-                    firstImage.visibility = View.GONE
-                    firstTime.visibility = View.GONE
+                    firstImage.visibility = View.INVISIBLE
+                    firstTime.visibility = View.INVISIBLE
                     firstText.text = steps[0].transitDetails!!.line.shortName
                     firstText.setTextColor(Color.parseColor(steps[0].transitDetails!!.line.textColor))
                     firstText.setBackgroundColor(Color.parseColor(steps[0].transitDetails!!.line.color))
@@ -185,11 +187,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[1].travelMode == "WALKING"){
-                    secondText.visibility = View.GONE
+                    secondText.visibility = View.INVISIBLE
                     secondTime.text = steps[1].duration.text.replace("분","")
                 } else if(steps[1].travelMode == "TRANSIT"){
-                    secondImage.visibility = View.GONE
-                    secondTime.visibility = View.GONE
+                    secondImage.visibility = View.INVISIBLE
+                    secondTime.visibility = View.INVISIBLE
                     secondText.text = steps[1].transitDetails!!.line.shortName
                     secondText.setTextColor(Color.parseColor(steps[1].transitDetails!!.line.textColor))
                     secondText.setBackgroundColor(Color.parseColor(steps[1].transitDetails!!.line.color))
@@ -197,11 +199,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[2].travelMode == "WALKING"){
-                    thirdText.visibility = View.GONE
+                    thirdText.visibility = View.INVISIBLE
                     thirdTime.text = steps[2].duration.text.replace("분","")
                 } else if(steps[2].travelMode == "TRANSIT"){
-                    thirdImage.visibility = View.GONE
-                    thirdTime.visibility = View.GONE
+                    thirdImage.visibility = View.INVISIBLE
+                    thirdTime.visibility = View.INVISIBLE
                     thirdText.text = steps[2].transitDetails!!.line.shortName
                     thirdText.setTextColor(Color.parseColor(steps[2].transitDetails!!.line.textColor))
                     thirdText.setBackgroundColor(Color.parseColor(steps[2].transitDetails!!.line.color))
@@ -209,11 +211,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[3].travelMode == "WALKING"){
-                    fourthText.visibility = View.GONE
+                    fourthText.visibility = View.INVISIBLE
                     fourthTime.text = steps[3].duration.text.replace("분","")
                 } else if(steps[3].travelMode == "TRANSIT"){
-                    fourthImage.visibility = View.GONE
-                    fourthTime.visibility = View.GONE
+                    fourthImage.visibility = View.INVISIBLE
+                    fourthTime.visibility = View.INVISIBLE
                     fourthText.text = steps[3].transitDetails!!.line.shortName
                     fourthText.setTextColor(Color.parseColor(steps[3].transitDetails!!.line.textColor))
                     fourthText.setBackgroundColor(Color.parseColor(steps[3].transitDetails!!.line.color))
@@ -224,11 +226,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             else -> {
                 // steps.size가 4 초과일 때 실행할 코드
                 if (steps[0].travelMode == "WALKING"){
-                    firstText.visibility = View.GONE
+                    firstText.visibility = View.INVISIBLE
                     firstTime.text = steps[0].duration.text.replace("분","")
                 } else if(steps[0].travelMode == "TRANSIT"){
-                    firstImage.visibility = View.GONE
-                    firstTime.visibility = View.GONE
+                    firstImage.visibility = View.INVISIBLE
+                    firstTime.visibility = View.INVISIBLE
                     firstText.text = steps[0].transitDetails!!.line.shortName
                     firstText.setTextColor(Color.parseColor(steps[0].transitDetails!!.line.textColor))
                     firstText.setBackgroundColor(Color.parseColor(steps[0].transitDetails!!.line.color))
@@ -236,11 +238,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 if (steps[1].travelMode == "WALKING"){
-                    secondText.visibility = View.GONE
+                    secondText.visibility = View.INVISIBLE
                     secondTime.text = steps[1].duration.text.replace("분","")
                 } else if(steps[1].travelMode == "TRANSIT"){
-                    secondImage.visibility = View.GONE
-                    secondTime.visibility = View.GONE
+                    secondImage.visibility = View.INVISIBLE
+                    secondTime.visibility = View.INVISIBLE
                     secondText.text = steps[1].transitDetails!!.line.shortName
                     secondText.setTextColor(Color.parseColor(steps[1].transitDetails!!.line.textColor))
                     secondText.setBackgroundColor(Color.parseColor(steps[1].transitDetails!!.line.color))
@@ -248,18 +250,18 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
                 //생략하기
-                thirdImage.visibility = View.GONE
-                thirdTime.visibility = View.GONE
-                thirdText.text = ". . ."
+                thirdImage.visibility = View.INVISIBLE
+                thirdTime.visibility = View.INVISIBLE
+                thirdText.text = " . . . "
                 thirdText.setTextColor(Color.parseColor("#FFFFFF"))
                 thirdText.setBackgroundColor(Color.parseColor("#626466"))
 
                 if (steps[steps.size-1].travelMode == "WALKING"){
-                    fourthText.visibility = View.GONE
+                    fourthText.visibility = View.INVISIBLE
                     fourthTime.text = steps[steps.size-1].duration.text.replace("분","")
                 } else if(steps[steps.size-1].travelMode == "TRANSIT"){
-                    fourthImage.visibility = View.GONE
-                    fourthTime.visibility = View.GONE
+                    fourthImage.visibility = View.INVISIBLE
+                    fourthTime.visibility = View.INVISIBLE
                     fourthText.text = steps[steps.size-1].transitDetails!!.line.shortName
                     fourthText.setTextColor(Color.parseColor(steps[steps.size-1].transitDetails!!.line.textColor))
                     fourthText.setBackgroundColor(Color.parseColor(steps[steps.size-1].transitDetails!!.line.color))
@@ -269,30 +271,30 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             }
         }
     }
-    private fun goneView(num : Int){
+    private fun INVISIBLEView(num : Int){
         when (num){
             1 -> {
-                firstImage.visibility = View.GONE
-                firstTime.visibility = View.GONE
-                firstText.visibility = View.GONE
+                firstImage.visibility = View.INVISIBLE
+                firstTime.visibility = View.INVISIBLE
+                firstText.visibility = View.INVISIBLE
             }
             2 -> {
-                secondImage.visibility = View.GONE
-                secondTime.visibility = View.GONE
-                secondText.visibility = View.GONE
+                secondImage.visibility = View.INVISIBLE
+                secondTime.visibility = View.INVISIBLE
+                secondText.visibility = View.INVISIBLE
             }
             3 -> {
-                thirdImage.visibility = View.GONE
-                thirdTime.visibility = View.GONE
-                thirdText.visibility = View.GONE
+                thirdImage.visibility = View.INVISIBLE
+                thirdTime.visibility = View.INVISIBLE
+                thirdText.visibility = View.INVISIBLE
             }
             4 -> {
-                fourthImage.visibility = View.GONE
-                fourthTime.visibility = View.GONE
-                fourthText.visibility = View.GONE
+                fourthImage.visibility = View.INVISIBLE
+                fourthTime.visibility = View.INVISIBLE
+                fourthText.visibility = View.INVISIBLE
             }
             else -> {
-                Log.e("BusFragmentAdapter error", "잘못된 goneView 입력")
+                Log.e("BusFragmentAdapter error", "잘못된 INVISIBLEView 입력")
             }
         }
     }

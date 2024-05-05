@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,8 @@ class SearchResultActivity : AppCompatActivity() {
     private lateinit var searchText: String
     private lateinit var searchBar2: EditText
     private lateinit var loadingMessage: TextView
+    private lateinit var loadingImage: ImageView
+    private lateinit var failImage: ImageView
     private lateinit var client: OkHttpClient
     private lateinit var listView : ListView
     private var startPoint = Place("출발지미정","","",0.0,0.0,0.0)
@@ -54,12 +57,12 @@ class SearchResultActivity : AppCompatActivity() {
         searchBar2 = findViewById(R.id.searchingBar2)
         searchBar2.setText(searchText)
         loadingMessage = findViewById(R.id.loadingMessage)
+        loadingImage = findViewById(R.id.loadingImage)
+        failImage = findViewById(R.id.failImage)
 
         client = OkHttpClient()
         credentials = Credentials.basic(username, password)
 
-        // 네트워크 요청 실행
-        loadingMessage.visibility = View.VISIBLE  // 네트워크 요청 시작 시 로딩바표시
         makeNetworkRequest(searchText)
 
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
@@ -99,7 +102,8 @@ class SearchResultActivity : AppCompatActivity() {
                     // UI 업데이트는 메인 스레드에서 수행
                     withContext(Dispatchers.Main) {
                         updateUI(responseBody)
-                        loadingMessage.visibility = View.GONE  // 응답 처리 후 사라짐
+                        loadingMessage.visibility = View.INVISIBLE  // 응답 처리 후 사라짐
+                        loadingImage.visibility = View.INVISIBLE
                     }
                 }
             } catch (e: Exception) {
@@ -120,6 +124,9 @@ class SearchResultActivity : AppCompatActivity() {
             Log.e("검색결과가 없거나 items배열이 비었음","검색결과가 없거나 items배열이 비었음")
             runOnUiThread {
                 Toast.makeText(this, "검색 결과가 없습니다.", Toast.LENGTH_LONG).show()
+                loadingImage.visibility = View.GONE
+                listView.visibility = View.GONE
+                failImage.visibility = View.VISIBLE
             }
         } else{
             val items = dataObject.getJSONArray("items")
