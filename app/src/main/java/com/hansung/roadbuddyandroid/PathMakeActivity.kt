@@ -90,8 +90,8 @@ class PathMakeActivity : AppCompatActivity() {
             tvbtntexi.setBackgroundResource(R.drawable.emboss_effect)
         }
         tvbtntexi.setOnClickListener {
-            val fragment = TaxiFragment.newInstance()
-            //fragment.setData(responseTaxiTMP)  // 데이터 설정
+            val fragment = TaxiFragment.newInstance(startPoint, endPoint)
+            showFragment(fragment)
             replaceFragment(fragment)
             tvbtnbus.setBackgroundResource(R.drawable.emboss_effect)
             tvbtntexi.setBackgroundResource(R.drawable.deboss_effect)

@@ -70,7 +70,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
         if(departureTime.contains("PM"))
             departureTime = "오후 " + departureTime.replace("PM","").replace(" ","")
 
-        textViewBusTime.text = "${arrivalTime} - ${departureTime}"
+        textViewBusTime.text = "${departureTime} - ${arrivalTime}"
         textViewBusDuration.text = route.legs[0].duration.text
 
         updateUI(route)
@@ -96,14 +96,14 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                 } else{
                     Log.e("BusFragmentAdapter error", "travelMode에러발생")
                 }
-                INVISIBLEView(2); INVISIBLEView(3); INVISIBLEView(4)
+                invisibleView(2); invisibleView(3); invisibleView(4)
                 firstToward.visibility = View.INVISIBLE
                 secondToward.visibility = View.INVISIBLE
                 thirdToward.visibility = View.INVISIBLE
             }
             2 -> {
                 // steps.size가 2일 때 실행할 코드
-                INVISIBLEView(3); INVISIBLEView(4)
+                invisibleView(3); invisibleView(4)
                 secondToward.visibility = View.INVISIBLE
                 thirdToward.visibility = View.INVISIBLE
                 if (steps[0].travelMode == "WALKING"){
@@ -133,7 +133,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             }
             3 -> {
                 // steps.size가 3일 때 실행할 코드
-                INVISIBLEView(4)
+                invisibleView(4)
                 thirdToward.visibility = View.INVISIBLE
                 if (steps[0].travelMode == "WALKING"){
                     firstText.visibility = View.INVISIBLE
@@ -271,7 +271,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             }
         }
     }
-    private fun INVISIBLEView(num : Int){
+    private fun invisibleView(num : Int){
         when (num){
             1 -> {
                 firstImage.visibility = View.INVISIBLE
@@ -294,7 +294,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
                 fourthText.visibility = View.INVISIBLE
             }
             else -> {
-                Log.e("BusFragmentAdapter error", "잘못된 INVISIBLEView 입력")
+                Log.e("BusFragmentAdapter error", "잘못된 invisibleView 입력")
             }
         }
     }
