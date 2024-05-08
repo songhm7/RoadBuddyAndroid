@@ -44,6 +44,9 @@
         <activity android:name=".PathMakeActivity"
             android:theme="@style/AppTheme">
         </activity>
+        <activity android:name=".DetailActivity"
+            android:theme="@style/AppTheme">
+        </activity>
     </application>
 
 </manifest>

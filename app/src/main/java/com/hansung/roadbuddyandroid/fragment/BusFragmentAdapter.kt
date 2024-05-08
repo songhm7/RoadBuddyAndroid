@@ -1,6 +1,7 @@
 package com.hansung.roadbuddyandroid.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +10,10 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.hansung.roadbuddyandroid.DetailActivity
 import com.hansung.roadbuddyandroid.Logr
 import com.hansung.roadbuddyandroid.R
 import com.hansung.roadbuddyandroid.Route
-
 class BusFragmentAdapter(context: Context, private val routes: List<Route>)
     : ArrayAdapter<Route>(context, 0, routes) {
     private lateinit var firstImage : ImageView
@@ -74,7 +75,11 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
         textViewBusDuration.text = route.legs[0].duration.text
 
         updateUI(route)
-
+        view.setOnClickListener {
+            val intent = Intent(context, DetailActivity::class.java)
+            intent.putExtra("route",route)
+            context.startActivity(intent)
+        }
         return view
     }
 

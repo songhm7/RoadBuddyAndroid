@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,7 +9,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="100dp"
-        android:textSize="50sp"
         android:text="로딩 중..."
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <ImageView
+        android:id="@+id/ImageLoadingFT"
+        android:layout_width="400dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/turtle8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/expect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#EEEEFF"
+        android:paddingTop="50dp"
+        android:text="예상되는"
+        android:textAlignment="center"
+        android:textSize="35dp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewBodyTaxi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#EEEEFF"
+        android:paddingStart="10dp"
+        android:paddingTop="80dp"
+        android:text="총 이동거리 : 1234Km\n\n이동 소요시간 : 1234분\n\n일반택시 요금 : 1234원\n\n장애인콜택시 대기시간 : 1234분\n\n장애인콜택시 요금 : 1234원"
+        android:textSize="25sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/expect" />
 </androidx.constraintlayout.widget.ConstraintLayout>
