@@ -91,7 +91,7 @@ class BusFragment : Fragment() {
     }
     private fun makeNetworkRequest(startPoint : Place, endPoint : Place) {
         val url = "http://3.25.65.146:8080/maps/directions?origin.latitude=${startPoint.latitude}&origin.longitude=${startPoint.longitude}" +
-                "&destination.latitude=${endPoint.latitude}&destination.longitude=${endPoint.longitude}&alternatives=true"
+                "&destination.latitude=${endPoint.latitude}&destination.longitude=${endPoint.longitude}&alternatives=true&departure_time=1715403600"
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

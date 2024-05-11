@@ -1,10 +1,21 @@
 package com.hansung.roadbuddyandroid
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
+import com.google.maps.android.PolyUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,26 +25,35 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import java.io.IOException
 
-class DetailActivity : AppCompatActivity() {
-    private lateinit var route: Route
-    // Basic 인증을 위한 사용자 이름과 비밀번호 설정
+
+class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
+    private lateinit var routeFromBFA: Route
     private val username = "user"
     private lateinit var password : String
     private lateinit var credentials: String
     private lateinit var client: OkHttpClient
+    private lateinit var mMap: GoogleMap
+    private lateinit var mapFragment: SupportMapFragment
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
-        route = intent.getParcelableExtra("route")!!
-        val testLeg = route.legs[0]
+        routeFromBFA = intent.getParcelableExtra("route")!!
+        val testLeg = routeFromBFA.legs[0]
         password = getString(R.string.API_KEY)
         client = OkHttpClient()
         credentials = Credentials.basic(username, password)
-
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+        Logr.d("디테일 요청Leg 확인", testLeg.toString())
         makeNetworkRequest(testLeg)
+    }
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
     }
 
     private fun makeNetworkRequest(leg: Leg){
@@ -54,10 +74,15 @@ class DetailActivity : AppCompatActivity() {
                 client.newCall(request).execute().use { response ->
                     if (!response.isSuccessful) throw IOException("Unexpected code $response")
                     val responseBody = response.body!!.string()
+                    Logr.d("디테일 응답확인", responseBody)
 
-                    // UI 업데이트는 메인 스레드에서 수행
+                    val jsonResponse = JSONObject(responseBody)
+                    val dataString = jsonResponse.getJSONObject("data").toString()
+
+                    val leg = Gson().fromJson(dataString, Leg::class.java)
+                    Logr.d("레그 변환 확인",leg.toString())
                     withContext(Dispatchers.Main) {
-                        Logr.d("디테일 액티비티 체크", responseBody)
+                        updateMapWithData(leg)
                     }
                 }
             } catch (e: Exception) {
@@ -68,4 +93,59 @@ class DetailActivity : AppCompatActivity() {
             }
         }
     }
+    private fun updateMapWithData(leg: Leg) {
+        // Draw polylines for each step
+        leg.steps.forEach { step ->
+            val polylineOptions = PolylineOptions()
+            val color = if (step.travelMode == "TRANSIT" && step.transitDetails != null) {
+                step.transitDetails.line.color
+            } else {
+                "#A9A9A9"  // Default color for walking mode
+            }
+
+            val decodedPath = PolyUtil.decode(step.polyline.points)
+            polylineOptions.addAll(decodedPath)
+            polylineOptions.color(Color.parseColor(color))
+            polylineOptions.width(15f)
+            mMap.addPolyline(polylineOptions)
+        }
+
+        // 급경사지를 위한 노란마커
+        leg.steps.flatMap { step -> step.steepSlopes ?: emptyList() }.forEach { slope ->
+            mMap.addMarker(
+                MarkerOptions()
+                    .position(LatLng(slope.latitude, slope.longitude))
+                    .title("급경사")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+            )
+        }
+
+        // Marker for the starting location (red marker)
+        mMap.addMarker(
+            MarkerOptions()
+                .position(LatLng(leg.startLocation.lat, leg.startLocation.lng))
+                .title("출발지")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        )
+
+        // Marker for the ending location (red marker)
+        mMap.addMarker(
+            MarkerOptions()
+                .position(LatLng(leg.endLocation.lat, leg.endLocation.lng))
+                .title("도착지")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        )
+
+        // Use provided bounds to initialize camera view
+        val bounds = LatLngBounds(
+            LatLng(routeFromBFA.bounds.southwest.lat, routeFromBFA.bounds.southwest.lng), // Southwest corner
+            LatLng(routeFromBFA.bounds.northeast.lat, routeFromBFA.bounds.northeast.lng)  // Northeast corner
+        )
+
+        // Adjust the camera to the bounds with some padding
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) // 100px padding
+    }
+
+
+
 }

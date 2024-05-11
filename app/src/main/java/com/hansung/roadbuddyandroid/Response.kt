@@ -1,7 +1,7 @@
 package com.hansung.roadbuddyandroid
 
-import com.google.gson.annotations.SerializedName
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 data class Response(
@@ -45,11 +45,11 @@ data class Leg(
     val distance: Distance,
     val duration: Duration,
     @SerializedName("end_address")
-    val endAddress: String,
+    val endAddress: String?,
     @SerializedName("end_location")
     val endLocation: Location,
     @SerializedName("start_address")
-    val startAddress: String,
+    val startAddress: String?,
     @SerializedName("start_location")
     val startLocation: Location,
     val steps: List<Step>
@@ -89,8 +89,32 @@ data class Step(
     @SerializedName("travel_mode")
     val travelMode: String,
     val maneuver: String?,
-    val steps: List<Step>?
+    val steps: List<Step>?,
+    val steepSlopes : List<SteepSlope>?,
+    @SerializedName("transfer_path")
+    val transferPath : TransferPath?
 ) : Parcelable
+
+@Parcelize
+data class TransferPath(
+    val chtnMvTpOrdr : Int, // 환승 이동 유형 순서
+    val stMovePath : String, // 출발지
+    val edMovePath : String, // 도착지
+    val elvtSttCd : String?, // 승강기 상태 코드
+    val elvtTpCd : String?, // 승강기 유형 코드
+    val imgPath : String?, // 이미지 경로 url
+    val mvContDtl : List<String>,// 상세 이동 내용
+    val mvPathMgNo : Int // 이동 경로 상세 경로
+) : Parcelable
+
+@Parcelize
+data class SteepSlope(
+    val address : String,
+    val shortAddress : String,
+    val latitude : Double,
+    val longitude : Double,
+) : Parcelable
+
 @Parcelize
 data class Polyline(
     val points: String

@@ -78,10 +78,10 @@
         android:id="@+id/secondToward"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="25dp"
         android:src="@drawable/to_next"
-        app:layout_constraintStart_toEndOf="@id/firstToward"
+        app:layout_constraintStart_toEndOf="@id/secondText"
         app:layout_constraintTop_toTopOf="parent" />
     <ImageView
         android:id="@+id/thirdImage"
@@ -115,10 +115,10 @@
         android:id="@+id/thirdToward"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="25dp"
         android:src="@drawable/to_next"
-        app:layout_constraintStart_toEndOf="@id/secondToward"
+        app:layout_constraintStart_toEndOf="@id/thirdText"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
