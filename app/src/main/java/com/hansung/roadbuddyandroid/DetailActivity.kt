@@ -3,6 +3,7 @@ package com.hansung.roadbuddyandroid
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -10,6 +11,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -33,15 +36,17 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
     private lateinit var routeFromBFA: Route
     private val username = "user"
     private lateinit var password : String
-    private lateinit var credentials: String
-    private lateinit var client: OkHttpClient
-    private lateinit var mMap: GoogleMap
+    private lateinit var credentials : String
+    private lateinit var client : OkHttpClient
+    private lateinit var mMap : GoogleMap
     private lateinit var mapFragment: SupportMapFragment
+    private lateinit var listViewDetail : ListView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
+        listViewDetail = findViewById(R.id.listViewDetail)
         routeFromBFA = intent.getParcelableExtra("route")!!
         val testLeg = routeFromBFA.legs[0]
         password = getString(R.string.API_KEY)
@@ -54,6 +59,7 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
     }
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(37.582701, 127.010274), 17f))
     }
 
     private fun makeNetworkRequest(leg: Leg){
@@ -83,6 +89,7 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
                     Logr.d("레그 변환 확인",leg.toString())
                     withContext(Dispatchers.Main) {
                         updateMapWithData(leg)
+                        updateListViewWithData(leg)
                     }
                 }
             } catch (e: Exception) {
@@ -97,6 +104,7 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
         // Draw polylines for each step
         leg.steps.forEach { step ->
             val polylineOptions = PolylineOptions()
+            val pattern = listOf(Dash(20f), Gap(20f)) // 점선 패턴 설정: 선 20px, 공간 20px
             val color = if (step.travelMode == "TRANSIT" && step.transitDetails != null) {
                 step.transitDetails.line.color
             } else {
@@ -107,6 +115,9 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
             polylineOptions.addAll(decodedPath)
             polylineOptions.color(Color.parseColor(color))
             polylineOptions.width(15f)
+            if (step.travelMode == "WALKING") {
+                polylineOptions.pattern(pattern)  // 걷기 모드일 때만 점선 적용
+            }
             mMap.addPolyline(polylineOptions)
         }
 
@@ -145,7 +156,12 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
         // Adjust the camera to the bounds with some padding
         mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100)) // 100px padding
     }
-
-
-
+    private fun updateListViewWithData(leg: Leg){
+        listViewDetail.adapter = DetailAdapter(context = this, steps = leg.steps)
+        listViewDetail.setOnItemClickListener { adapterView, view, position, id ->
+            val step = adapterView.getItemAtPosition(position) as Step
+            val latLng = LatLng(step.startLocation.lat, step.startLocation.lng)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17f)) // 15f는 확대 수준입니다.
+        }
+    }
 }

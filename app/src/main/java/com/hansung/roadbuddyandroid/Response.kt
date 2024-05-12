@@ -90,7 +90,7 @@ data class Step(
     val travelMode: String,
     val maneuver: String?,
     val steps: List<Step>?,
-    @SerializedName("steep_slopes")
+    @SerializedName("steep_slope")
     val steepSlopes : List<SteepSlope>?,
     @SerializedName("transfer_path")
     val transferPath : List<TransferPath>?
