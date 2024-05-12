@@ -11,7 +11,9 @@ import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import java.io.File
+import com.hansung.roadbuddyandroid.SearchHistoryManager.manageHistory
+import com.hansung.roadbuddyandroid.SearchHistoryManager.readSearchHistory
+import com.hansung.roadbuddyandroid.SearchHistoryManager.writeSearchHistory
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var searchingBar: EditText
@@ -34,13 +36,13 @@ class SearchActivity : AppCompatActivity() {
         }
         listViewRecent = findViewById(R.id.listViewRecent)
         searchingBar = findViewById(R.id.searchingBar)
-        recentSearches = readSearchHistory()
+        recentSearches = readSearchHistory(this)
 
         // ArrayAdapter 초기화
         adapterRecent = RecentAdapter(
             context = this,
             dataSource = ArrayList(recentSearches),
-            onItemRemoved = { writeSearchHistory(it) },
+            onItemRemoved = { writeSearchHistory(this, it) },
             startPoint = startPoint,
             endPoint = endPoint,
             curLat = curLat,
@@ -55,10 +57,10 @@ class SearchActivity : AppCompatActivity() {
                 // submit 동작을 처리하는 코드
                 val searchText = searchingBar.text.toString()
                 if (searchText.isNotEmpty()) {
-                    recentSearches = readSearchHistory()
+                    recentSearches = readSearchHistory(this)
                     val updatedHistory = manageHistory(recentSearches, searchText)
                     searchingBar.setText("")
-                    writeSearchHistory(updatedHistory)
+                    writeSearchHistory(this, updatedHistory)
                     adapterRecent.clear()
                     adapterRecent.addAll(updatedHistory)
                     adapterRecent.notifyDataSetChanged()
@@ -102,46 +104,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun readSearchHistory(): List<String> {
-        val file = File(filesDir, "recent.txt")
-        if (!file.exists()) {
-            file.createNewFile()
-        }
-        return file.readLines().take(10)  // 최근 10개의 검색 기록만 가져옴
-    }
-
-    private fun writeSearchHistory(searches: List<String>) {
-        val file = File(filesDir, "recent.txt")
-        file.writeText(searches.joinToString("\n"))
-    }
-
-    private fun deleteSearchHistory() {
-        val file = File(filesDir, "recent.txt")
-        if (file.exists()) {
-            file.delete()
-        }
-    }
-
-    //newRecord에 대한 중복처리를 거쳐 리스트를 반환
-    private fun manageHistory(history: List<String>, newRecord: String): List<String> {
-        val tmpHistory = history.toMutableList() // 기존 목록을 복사하여 임시 MutableList 생성
-
-        if (newRecord.isNotEmpty()) {
-            var index = tmpHistory.indexOf(newRecord)
-            if (index != -1) {
-                // 기존 기록이 있다면 해당 기록 삭제
-                tmpHistory.removeAt(index)
-            } else if (tmpHistory.size >= 10) {
-                // 목록이 10개 이상이면 가장 오래된 기록 삭제
-                tmpHistory.removeAt(tmpHistory.size - 1)
-            }
-            // 새 기록을 맨 앞에 추가
-            tmpHistory.add(0, newRecord)
-        }
-        return tmpHistory.toList() // 임시 MutableList를 다시 List로 변환
-    }
-
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         setIntent(intent)  // 최신 인텐트로 업데이트
@@ -153,4 +115,17 @@ class SearchActivity : AppCompatActivity() {
         Log.d("Search endPoint", endPoint.name)
         adapterRecent.updateEndpoints(startPoint, endPoint)
     }
+    override fun onResume() {
+        super.onResume()
+
+        val newSearches = readSearchHistory(this)
+        if (!recentSearches.equals(newSearches)) {
+            recentSearches = newSearches
+            adapterRecent.clear()
+            adapterRecent.addAll(recentSearches)
+            adapterRecent.notifyDataSetChanged()
+        }
+    }
+
+
 }

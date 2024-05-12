@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
+import com.hansung.roadbuddyandroid.SearchHistoryManager.manageHistory
+import com.hansung.roadbuddyandroid.SearchHistoryManager.writeSearchHistory
 
 class RecentAdapter(context: Context,
                     private val dataSource: MutableList<String>,
@@ -39,6 +41,9 @@ class RecentAdapter(context: Context,
                 if (startPoint.name != "출발지미정") putExtra("startPoint", startPoint)
                 if (endPoint.name != "도착지미정") putExtra("endPoint", endPoint)
             }
+            var recentSearches = SearchHistoryManager.readSearchHistory(context)
+            recentSearches = manageHistory(recentSearches, item!!)
+            writeSearchHistory(context,recentSearches)
             context.startActivity(intent)
         }
 

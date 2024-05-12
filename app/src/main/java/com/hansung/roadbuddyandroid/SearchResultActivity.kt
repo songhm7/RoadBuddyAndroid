@@ -11,6 +11,9 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.hansung.roadbuddyandroid.SearchHistoryManager.manageHistory
+import com.hansung.roadbuddyandroid.SearchHistoryManager.readSearchHistory
+import com.hansung.roadbuddyandroid.SearchHistoryManager.writeSearchHistory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,8 +75,12 @@ class SearchResultActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 // submit 동작을 처리하는 코드
                 val searchText = searchBar2.text.toString()
-                if (searchText.isNotEmpty())
+                if (searchText.isNotEmpty()){
+                    var recentSearches = readSearchHistory(this)
+                    recentSearches = manageHistory(recentSearches, searchText)
+                    writeSearchHistory(this, recentSearches)
                     makeNetworkRequest(searchText)
+                }
                 else
                     Toast.makeText(this, "검색어를 입력해주세요.", Toast.LENGTH_SHORT).show()
                 true // 이벤트 처리 완료
