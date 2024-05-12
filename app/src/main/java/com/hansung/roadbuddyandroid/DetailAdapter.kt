@@ -50,7 +50,7 @@ class DetailAdapter(context: Context, private val steps: List<Step>) : ArrayAdap
             else
                 tvMain.text = "환승 이동"
         } else {
-            tvMain.text = "이동수단으로 ${step.distance.text}"
+            tvMain.text = "${step.transitDetails!!.line.name} ${step.transitDetails.line.shortName}으로 ${step.distance.text} 이동"
         }
 
         return view

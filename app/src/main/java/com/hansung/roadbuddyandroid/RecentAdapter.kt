@@ -50,9 +50,6 @@ class RecentAdapter(context: Context,
             //콜백함수 호출
             onItemRemoved(dataSource)
         }
-
-
-
         return rowView
     }
 
