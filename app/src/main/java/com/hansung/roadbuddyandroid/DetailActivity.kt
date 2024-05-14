@@ -3,6 +3,8 @@ package com.hansung.roadbuddyandroid
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -88,6 +90,7 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
                     val leg = Gson().fromJson(dataString, Leg::class.java)
                     Logr.d("레그 변환 확인",leg.toString())
                     withContext(Dispatchers.Main) {
+                        findViewById<ImageView>(R.id.loadingImage).visibility = View.GONE
                         updateMapWithData(leg)
                         updateListViewWithData(leg)
                     }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -60,18 +61,28 @@ class PlaceViewActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         findViewById<Button>(R.id.button_start_point).setOnClickListener{
-            val intent = Intent(this, PathMakeActivity::class.java).apply {
-                putExtra("startPoint", selectedPlace)
-                putExtra("endPoint", endPoint)
+            if(!selectedPlace.address.contains("서울")) {
+                Toast.makeText(this@PlaceViewActivity, "서비스 범위 밖의 장소입니다", Toast.LENGTH_LONG).show()
             }
-            startActivity(intent)
+            else {
+                val intent = Intent(this, PathMakeActivity::class.java).apply {
+                    putExtra("startPoint", selectedPlace)
+                    putExtra("endPoint", endPoint)
+                }
+                startActivity(intent)
+            }
         }
         findViewById<Button>(R.id.button_end_point).setOnClickListener{
-            val intent = Intent(this, PathMakeActivity::class.java).apply {
-                putExtra("endPoint", selectedPlace)
-                putExtra("startPoint", startPoint)
+            if(!selectedPlace.address.contains("서울")) {
+                Toast.makeText(this@PlaceViewActivity, "서비스 범위 밖의 장소입니다", Toast.LENGTH_LONG).show()
             }
-            startActivity(intent)
+            else {
+                val intent = Intent(this, PathMakeActivity::class.java).apply {
+                    putExtra("endPoint", selectedPlace)
+                    putExtra("startPoint", startPoint)
+                }
+                startActivity(intent)
+            }
         }
 
     }

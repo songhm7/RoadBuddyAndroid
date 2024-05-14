@@ -44,13 +44,24 @@ class DetailAdapter(context: Context, private val steps: List<Step>) : ArrayAdap
         }
         view.findViewById<TextView>(R.id.duration).setText(step.duration.text)
         val tvMain = view.findViewById<TextView>(R.id.item_tv_main)
+        val tvBody = view.findViewById<TextView>(R.id.item_tv_body)
         if (isWalking) {
-            if (step.transferPath == null || step.transferPath.isEmpty())
+            if (step.transferPath == null || step.transferPath.isEmpty()) { //단순 도보이동의 경우
                 tvMain.text = "도보로 ${step.distance.text} 이동"
-            else
+                tvBody.visibility = View.INVISIBLE
+            }
+            else { //환승이동의 경우
                 tvMain.text = "환승 이동"
-        } else {
-            tvMain.text = "${step.transitDetails!!.line.name} ${step.transitDetails.line.shortName}으로 ${step.distance.text} 이동"
+                var tmpTextBody = ""
+                step.transferPath[0].mvContDtl.forEach { detail ->
+                    tmpTextBody = tmpTextBody + detail + "\n"
+                }
+                tvBody.text = tmpTextBody
+            }
+        } else { //교통수단 이동의 경우
+            tvMain.text = "${step.transitDetails!!.line.name} ${step.transitDetails.line.shortName}(으)로 ${step.distance.text} 이동"
+            tvBody.text = "${step.transitDetails.departureStop.name} 승차 (${step.transitDetails.departureTime.text})\n" +
+                    "${step.transitDetails.arrivalStop.name} 하차 (${step.transitDetails.arrivalTime.text})"
         }
 
         return view

@@ -21,10 +21,10 @@ import java.time.LocalDateTime
 import java.util.Random
 
 class TaxiFragment : Fragment() {
-    private lateinit var taxiBody : TextView
+    private lateinit var taxiBody: TextView
     private lateinit var textViewFragmentTaxi: TextView
-    private lateinit var image : ImageView
-    private lateinit var expect : TextView
+    private lateinit var image: ImageView
+    private lateinit var expect: TextView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,30 +46,31 @@ class TaxiFragment : Fragment() {
 
     private fun makeNetworkRequest(startPoint: Place, endPoint: Place) {
         val client = OkHttpClient()
-        val url = "http://3.25.65.146:8080/maps/drive?end.longitude=${endPoint.longitude}&end.latitude=${endPoint.latitude}" +
-                "&start.longitude=${startPoint.longitude}&start.latitude=${startPoint.latitude}"
+        val url =
+            "http://3.25.65.146:8080/maps/drive?end.longitude=${endPoint.longitude}&end.latitude=${endPoint.latitude}" +
+                    "&start.longitude=${startPoint.longitude}&start.latitude=${startPoint.latitude}"
 
         val request = Request.Builder()
             .url(url)
             .build()
         CoroutineScope(Dispatchers.IO).launch {
-                client.newCall(request).execute().use { response ->
-                    if (response.isSuccessful) {
-                        val responseData = response.body?.string()
-                        if (responseData != null) {
-                            val jsonResponse = JSONObject(responseData)
-                            withContext(Dispatchers.Main) {
-                                updateUI(jsonResponse)
-                            }
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    val responseData = response.body?.string()
+                    if (responseData != null) {
+                        val jsonResponse = JSONObject(responseData)
+                        withContext(Dispatchers.Main) {
+                            updateUI(jsonResponse)
                         }
-                    } else {
-                        Log.e("TaxiFragment", "Network request failed with code ${response.code}")
                     }
+                } else {
+                    Log.e("TaxiFragment", "Network request failed with code ${response.code}")
                 }
             }
         }
+    }
 
-    private fun updateUI(jsonResponse: JSONObject){
+    private fun updateUI(jsonResponse: JSONObject) {
         // JSON에서 필요한 정보 추출
         val features = jsonResponse.getJSONObject("data").getJSONArray("features")
         val properties = features.getJSONObject(0).getJSONObject("properties")
@@ -82,38 +83,47 @@ class TaxiFragment : Fragment() {
         }
 
         var totalTime = properties.getInt("totalTime")
-        var totalTimeDisplay = if(totalTime < 60){
-            "${totalTime}분"
-        } else{
-            "${totalTime/60}시간 ${totalTime%60}분"
+        val totalTimeDisplay = when {
+            totalTime < 60 -> "${totalTime}초"
+            totalTime >= 3600 -> {
+                val hours = totalTime / 3600
+                val minutes = (totalTime % 3600) / 60
+                "${hours}시간 ${minutes}분"
+            }
+            else -> "${totalTime / 60}분"
         }
 
         val taxiFare = properties.getInt("taxiFare")
         val callTime = generateRandomWithTimeSeed()
-        var callFare = if(totalDistance <=5000) {
+        var callFare = if (totalDistance <= 5000) {
             1500
-        } else if(totalDistance <=10000){
-            1500 + (totalDistance - 5000)/1000 * 280
-        } else{
+        } else if (totalDistance <= 10000) {
+            1500 + (totalDistance - 5000) / 1000 * 280
+        } else {
             2900 + (totalDistance - 10000) / 1000 * 70
         }
-        if (callFare%100 != 0){
-            callFare = callFare - callFare%100
+        if (callFare % 100 != 0) {
+            callFare = callFare - callFare % 100
         }
 
-        taxiBody.setText("총 이동거리 : ${totalDistanceDisplay}\n\n" +
-                "이동 소요시간 : ${totalTimeDisplay}\n\n" +
-                "일반택시 요금 : ${taxiFare}원\n\n" +
-                "장애인 콜택시 대기시간 : ${callTime}분\n\n" +
-                "장애인 콜택시 요금 : ${callFare}원\n\n")
+        taxiBody.setText(
+            "총 이동거리 : ${totalDistanceDisplay}\n\n" +
+                    "이동 소요시간 : ${totalTimeDisplay}\n\n" +
+                    "일반택시 요금 : ${taxiFare}원\n\n" +
+                    "장애인 콜택시 대기시간 : ${callTime}분\n\n" +
+                    "장애인 콜택시 요금 : ${callFare}원\n\n"
+        )
 
         textViewFragmentTaxi.visibility = View.GONE
         image.visibility = View.GONE
         taxiBody.visibility = View.VISIBLE
         expect.visibility = View.VISIBLE
         // 추출한 정보를 로그로 출력
-        Log.d("TF응답확인", "Total Distance: $totalDistanceDisplay, Total Time: $totalDistanceDisplay, Taxi Fare: $taxiFare," +
-                "콜택시 대기시간 : $callTime, 콜택시 요금 : $callFare 원")
+        Log.d(
+            "TF응답확인",
+            "Total Distance: $totalDistanceDisplay, Total Time: $totalTimeDisplay, Taxi Fare: $taxiFare," +
+                    "콜택시 대기시간 : $callTime, 콜택시 요금 : $callFare 원"
+        )
     }
 
     companion object {
@@ -126,6 +136,7 @@ class TaxiFragment : Fragment() {
             return fragment
         }
     }
+
     fun generateRandomWithTimeSeed(): Int {
         val currentTime = LocalDateTime.now()
         // 10분 단위로 같은 seed 값을 사용하기 위해 시간과 분을 이용해 seed 계산
@@ -133,6 +144,6 @@ class TaxiFragment : Fragment() {
         val random = Random(seed.toLong())
 
         // 20에서 60 사이의 난수 생성
-        return random.nextInt(41) + 20  // 41은 (60-20+1)의 결과
+        return random.nextInt(21) + 40  // 41은 (60-20+1)의 결과
     }
 }
