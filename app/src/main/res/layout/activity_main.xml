@@ -27,16 +27,4 @@
         android:layout_height="60dp"
         android:id="@+id/searchingBar"/>
 
-    <!-- 개발중 축척 조절을 위한 SeekBar -->
-    <SeekBar
-        android:id="@+id/scaleSeekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="50dp"
-        android:max="20"
-        android:progress="10" />
 </RelativeLayout>

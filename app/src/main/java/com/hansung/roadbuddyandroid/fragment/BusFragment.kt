@@ -32,7 +32,6 @@ class BusFragment : Fragment() {
     private val username = "user"
     private lateinit var password : String
     private lateinit var credentials: String
-    private lateinit var responseTMP : String
     private lateinit var BusListView : ListView
 
 
@@ -105,7 +104,6 @@ class BusFragment : Fragment() {
 
                     val responseBody = response.body!!.string()
                     Logr.d("BF응답확인", responseBody)
-                    responseTMP = responseBody
 
                     // UI 업데이트는 메인 스레드에서 수행
                     withContext(Dispatchers.Main) {

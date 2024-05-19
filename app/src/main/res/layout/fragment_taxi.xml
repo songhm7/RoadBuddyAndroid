@@ -33,13 +33,21 @@
         android:textSize="35dp"
         android:textStyle="bold"
         android:visibility="invisible"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toTopOf="@id/textViewBodyTaxi"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewBodyTaxi"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="#EEEEFF"
         android:paddingStart="10dp"
         android:paddingTop="80dp"
@@ -47,6 +55,7 @@
         android:textSize="25sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/expect" />
 </androidx.constraintlayout.widget.ConstraintLayout>

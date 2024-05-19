@@ -53,6 +53,7 @@ data class Leg(
     @SerializedName("start_location")
     val startLocation: Location,
     val steps: List<Step>
+
 ) : Parcelable
 
 @Parcelize
@@ -133,7 +134,8 @@ data class TransitDetails(
     val departureTime: TimeInfo,
     val headsign: String,
     val line: Line,
-    val numStops: Int
+    @SerializedName("num_stops")
+    val numStops: String?
 ) : Parcelable
 
 @Parcelize

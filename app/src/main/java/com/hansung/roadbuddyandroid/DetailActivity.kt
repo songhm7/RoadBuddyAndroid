@@ -44,7 +44,6 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var listViewDetail : ListView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
@@ -68,6 +67,7 @@ class DetailActivity : AppCompatActivity() , OnMapReadyCallback {
         val url = "http://3.25.65.146:8080/subway/transfer"
         val gson = Gson()
         val legJson = gson.toJson(leg)  // Leg 객체를 JSON 문자열로 변환
+        Logr.d("레그제이슨확인",legJson)
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val body = legJson.toRequestBody(mediaType)
 

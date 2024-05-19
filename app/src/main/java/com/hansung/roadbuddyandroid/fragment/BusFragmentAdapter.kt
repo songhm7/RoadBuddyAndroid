@@ -72,7 +72,7 @@ class BusFragmentAdapter(context: Context, private val routes: List<Route>)
             departureTime = "오후 " + departureTime.replace("PM","").replace(" ","")
 
         textViewBusTime.text = "${departureTime} - ${arrivalTime}"
-        textViewBusDuration.text = route.legs[0].duration.text
+        textViewBusDuration.text = route.legs[0].duration.text.replace("\n"," ")
 
         updateUI(route)
         view.setOnClickListener {

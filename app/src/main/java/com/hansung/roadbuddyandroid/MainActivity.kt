@@ -63,17 +63,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             layoutParams.setMargins(0, 0, 30, 30)
         }
 
-        // 축척 조절 바 초기화
-        scaleSeekBar = findViewById(R.id.scaleSeekBar)
-        scaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(progress.toFloat() * 1.5f))
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
-        })
+//        // 축척 조절 바 초기화
+//        scaleSeekBar = findViewById(R.id.scaleSeekBar)
+//        scaleSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+//                mMap.animateCamera(CameraUpdateFactory.zoomTo(progress.toFloat() * 1.5f))
+//            }
+//
+//            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+//
+//            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+//        })
 
         // 검색창 초기화
         val searchingBar = findViewById<TextView>(R.id.searchingBar)
