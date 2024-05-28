@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.hansung.roadbuddyandroid.Place
 import com.hansung.roadbuddyandroid.R
@@ -17,14 +19,36 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
-import java.time.LocalDateTime
-import java.util.Random
 
 class TaxiFragment : Fragment() {
-    private lateinit var taxiBody: TextView
-    private lateinit var textViewFragmentTaxi: TextView
-    private lateinit var image: ImageView
-    private lateinit var expect: TextView
+    private lateinit var loadingText: TextView
+    private lateinit var loadingImage: ImageView
+
+    private lateinit var moveTimeLabel: TextView
+    private lateinit var tvMoveTime: TextView
+
+    private lateinit var seoulFeeLabel: TextView
+    private lateinit var tvSeoulFee: TextView
+
+    private lateinit var normalFeeLabel: TextView
+    private lateinit var tvNormalFee: TextView
+
+    private lateinit var constraintTaxi: ConstraintLayout
+    private lateinit var TaxiImage: ImageView
+    private lateinit var moveDistance: TextView
+
+    private lateinit var allWaitingLabel: TextView
+    private lateinit var tvAllWaiting: TextView
+
+    private lateinit var nearWaitingLabel: TextView
+    private lateinit var tvNearWaiting: TextView
+
+    private lateinit var meanWaitingLabel: TextView
+    private lateinit var tvMeanWaiting: TextView
+
+    private lateinit var callButton : TextView
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,12 +57,32 @@ class TaxiFragment : Fragment() {
         arguments?.let {
             val startPoint = it.getParcelable<Place>("startPoint")
             val endPoint = it.getParcelable<Place>("endPoint")
-            taxiBody = view.findViewById(R.id.textViewBodyTaxi)
-            textViewFragmentTaxi = view.findViewById(R.id.textViewFragmentTaxi)
-            image = view.findViewById(R.id.ImageLoadingFT)
-            expect = view.findViewById(R.id.expect)
+
+            loadingText = view.findViewById(R.id.textViewFragmentTaxi)
+            loadingImage = view.findViewById(R.id.ImageLoadingFT)
+            moveTimeLabel = view.findViewById(R.id.moveTimeLabel)
+            tvMoveTime = view.findViewById(R.id.tv_moveTime)
+            seoulFeeLabel = view.findViewById(R.id.seoulFeeLabel)
+            tvSeoulFee = view.findViewById(R.id.tv_seoulFee)
+            normalFeeLabel = view.findViewById(R.id.normalFeeLabel)
+            tvNormalFee = view.findViewById(R.id.tv_normalFee)
+            constraintTaxi = view.findViewById(R.id.constraintTaxi)
+            TaxiImage = view.findViewById(R.id.imageTaxi)
+            moveDistance = view.findViewById(R.id.moveDistance)
+            allWaitingLabel = view.findViewById(R.id.allWaitingLabel)
+            tvAllWaiting = view.findViewById(R.id.tv_allWaiting)
+            nearWaitingLabel = view.findViewById(R.id.nearWaitingLabel)
+            tvNearWaiting = view.findViewById(R.id.tv_nearWaiting)
+            meanWaitingLabel = view.findViewById(R.id.meanWaitingLabel)
+            tvMeanWaiting = view.findViewById(R.id.tv_meanWaiting)
+            callButton = view.findViewById(R.id.button_callNow)
+
             if (startPoint != null && endPoint != null) {
+                goneAllExceptLoading()
                 makeNetworkRequest(startPoint, endPoint)
+            }
+            callButton.setOnClickListener {
+                Toast.makeText(requireContext(), "콜 요청을 발송했습니다", Toast.LENGTH_LONG).show()
             }
         }
         return view
@@ -69,7 +113,30 @@ class TaxiFragment : Fragment() {
             }
         }
     }
+    private fun makeNetworkRequestForWaiting(){
+        val client = OkHttpClient()
+        val url =
+            "http://3.25.65.146:8080/taxi/waiting"
+        val request = Request.Builder()
+            .url(url)
+            .build()
+        CoroutineScope(Dispatchers.IO).launch{
+            client.newCall(request).execute().use{response ->
+                if(response.isSuccessful){
+                    val responseData = response.body?.string()
+                    if(responseData != null){
+                        val jsonResponse = JSONObject(responseData)
+                        withContext(Dispatchers.Main){
+                            updateUIWithWaiting(jsonResponse)
+                        }
+                    }
+                } else{
+                    Log.e("TaxiFragment","Network request failed with code ${response.code}")
+                }
 
+            }
+        }
+    }
     private fun updateUI(jsonResponse: JSONObject) {
         // JSON에서 필요한 정보 추출
         val features = jsonResponse.getJSONObject("data").getJSONArray("features")
@@ -94,7 +161,6 @@ class TaxiFragment : Fragment() {
         }
 
         val taxiFare = properties.getInt("taxiFare")
-        val callTime = generateRandomWithTimeSeed()
         var callFare = if (totalDistance <= 5000) {
             1500
         } else if (totalDistance <= 10000) {
@@ -105,25 +171,18 @@ class TaxiFragment : Fragment() {
         if (callFare % 100 != 0) {
             callFare = callFare - callFare % 100
         }
+        tvMoveTime.setText(totalTimeDisplay)
+        tvSeoulFee.setText("${callFare}원")
+        tvNormalFee.setText("${taxiFare}원")
+        moveDistance.setText("이동거리 : ${totalDistanceDisplay}")
 
-        taxiBody.setText(
-            "총 이동거리 : ${totalDistanceDisplay}\n\n" +
-                    "이동 소요시간 : ${totalTimeDisplay}\n\n" +
-                    "일반택시 요금 : ${taxiFare}원\n\n" +
-                    "장애인 콜택시 대기시간 : ${callTime}분\n\n" +
-                    "장애인 콜택시 요금 : ${callFare}원\n\n"
-        )
-
-        textViewFragmentTaxi.visibility = View.GONE
-        image.visibility = View.GONE
-        taxiBody.visibility = View.VISIBLE
-        expect.visibility = View.VISIBLE
-        // 추출한 정보를 로그로 출력
-        Log.d(
-            "TF응답확인",
-            "Total Distance: $totalDistanceDisplay, Total Time: $totalTimeDisplay, Taxi Fare: $taxiFare," +
-                    "콜택시 대기시간 : $callTime, 콜택시 요금 : $callFare 원"
-        )
+        makeNetworkRequestForWaiting()
+    }
+    private fun updateUIWithWaiting(jsonResponse: JSONObject) {
+        Log.d("testtesttest",jsonResponse.toString())
+        val meanWaiting = jsonResponse.getJSONObject("data").getString("time")
+        tvMeanWaiting.setText("${meanWaiting}")
+        visibleAllExceptLoading()
     }
 
     companion object {
@@ -137,13 +196,44 @@ class TaxiFragment : Fragment() {
         }
     }
 
-    fun generateRandomWithTimeSeed(): Int {
-        val currentTime = LocalDateTime.now()
-        // 10분 단위로 같은 seed 값을 사용하기 위해 시간과 분을 이용해 seed 계산
-        val seed = currentTime.hour * 60 + (currentTime.minute / 10)
-        val random = Random(seed.toLong())
-
-        // 20에서 60 사이의 난수 생성
-        return random.nextInt(21) + 40  // 41은 (60-20+1)의 결과
+    fun goneAllExceptLoading(){
+        loadingText.visibility = View.VISIBLE
+        loadingImage.visibility = View.VISIBLE
+        moveTimeLabel.visibility = View.GONE
+        tvMoveTime.visibility = View.GONE
+        seoulFeeLabel.visibility = View.GONE
+        tvSeoulFee.visibility = View.GONE
+        normalFeeLabel.visibility = View.GONE
+        tvNormalFee.visibility = View.GONE
+        constraintTaxi.visibility = View.GONE
+        TaxiImage.visibility = View.GONE
+        moveDistance.visibility = View.GONE
+        allWaitingLabel.visibility = View.GONE
+        tvAllWaiting.visibility = View.GONE
+        nearWaitingLabel.visibility = View.GONE
+        tvNearWaiting.visibility = View.GONE
+        meanWaitingLabel.visibility = View.GONE
+        tvMeanWaiting.visibility = View.GONE
+        callButton.visibility = View.GONE
+    }
+    fun visibleAllExceptLoading(){
+        loadingText.visibility = View.GONE
+        loadingImage.visibility = View.GONE
+        moveTimeLabel.visibility = View.VISIBLE
+        tvMoveTime.visibility = View.VISIBLE
+        seoulFeeLabel.visibility = View.VISIBLE
+        tvSeoulFee.visibility = View.VISIBLE
+        normalFeeLabel.visibility = View.VISIBLE
+        tvNormalFee.visibility = View.VISIBLE
+        constraintTaxi.visibility = View.VISIBLE
+        TaxiImage.visibility = View.VISIBLE
+        moveDistance.visibility = View.VISIBLE
+        allWaitingLabel.visibility = View.VISIBLE
+        tvAllWaiting.visibility = View.VISIBLE
+        nearWaitingLabel.visibility = View.VISIBLE
+        tvNearWaiting.visibility = View.VISIBLE
+        meanWaitingLabel.visibility = View.VISIBLE
+        tvMeanWaiting.visibility = View.VISIBLE
+        callButton.visibility = View.VISIBLE
     }
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -58,32 +60,38 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_end" />
 
-    <TextView
-        android:id="@+id/tvbutton_bus"
-        android:layout_width="100dp"
+    <ImageButton
+        android:id="@+id/img_button_bus"
+        android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:background="@color/hansung_skyBlue"
-        android:text="대중교통"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/bus_icon"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@id/img_button_taxi"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_end" />
 
-    <TextView
-        android:id="@+id/tvbutton_texi"
-        android:layout_width="100dp"
+    <ImageButton
+        android:id="@+id/img_button_taxi"
+        android:layout_width="0dp"
         android:layout_height="35dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="90dp"
-        android:background="@color/hansung_skyBlue"
-        android:text="택시"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/taxi_icon"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_button_bus"
         app:layout_constraintTop_toBottomOf="@id/tv_end" />
 
     <fragment
@@ -91,8 +99,7 @@
         android:name="com.hansung.roadbuddyandroid.fragment.EmptyFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvbutton_bus" />
+        app:layout_constraintTop_toBottomOf="@id/img_button_bus" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

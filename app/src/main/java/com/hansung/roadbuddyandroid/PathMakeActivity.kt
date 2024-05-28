@@ -1,6 +1,7 @@
 package com.hansung.roadbuddyandroid
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
@@ -16,8 +17,8 @@ class PathMakeActivity : AppCompatActivity() {
     private var endPoint = Place("도착지미정","","",0.0,0.0,0.0)
     private lateinit var tvStart: TextView
     private lateinit var tvEnd: TextView
-    private lateinit var tvbtnbus : TextView
-    private lateinit var tvbtntexi : TextView
+    private lateinit var imgBtnBus : ImageButton
+    private lateinit var imgBtnTaxi : ImageButton
     private lateinit var fragment : View
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,12 +27,12 @@ class PathMakeActivity : AppCompatActivity() {
 
         tvStart = findViewById(R.id.tv_start)
         tvEnd = findViewById(R.id.tv_end)
-        tvbtnbus = findViewById(R.id.tvbutton_bus)
-        tvbtntexi = findViewById(R.id.tvbutton_texi)
+        imgBtnBus = findViewById(R.id.img_button_bus)
+        imgBtnTaxi = findViewById(R.id.img_button_taxi)
         fragment = findViewById(R.id.fragment_mpxml)
 
-        tvbtnbus.visibility = View.GONE  // 처음에는 버튼을 숨김
-        tvbtntexi.visibility = View.GONE  // 처음에는 버튼을 숨김
+        imgBtnBus.visibility = View.GONE  // 처음에는 버튼을 숨김
+        imgBtnTaxi.visibility = View.GONE  // 처음에는 버튼을 숨김
 
         if (intent.hasExtra("startPoint")) startPoint = intent.getParcelableExtra("startPoint")!!
         if (intent.hasExtra("endPoint")) endPoint = intent.getParcelableExtra("endPoint")!!
@@ -55,10 +56,8 @@ class PathMakeActivity : AppCompatActivity() {
             }
             else {
                 showFragment(BusFragment.newInstance(startPoint, endPoint))
-                tvbtnbus.setBackgroundResource(R.drawable.deboss_effect)
-                tvbtntexi.setBackgroundResource(R.drawable.emboss_effect)
-                tvbtnbus.visibility = View.VISIBLE
-                tvbtntexi.visibility = View.VISIBLE
+                imgBtnBus.visibility = View.VISIBLE
+                imgBtnTaxi.visibility = View.VISIBLE
             }
         }
 
@@ -82,19 +81,19 @@ class PathMakeActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
-        tvbtnbus.setOnClickListener {
+        imgBtnBus.setOnClickListener {
             val fragment = BusFragment.newInstance(startPoint, endPoint)
             showFragment(fragment)
             replaceFragment(fragment)
-            tvbtnbus.setBackgroundResource(R.drawable.deboss_effect)
-            tvbtntexi.setBackgroundResource(R.drawable.emboss_effect)
+            imgBtnBus.setBackgroundColor(Color.parseColor("#049EDB"))
+            imgBtnTaxi.setBackgroundColor(Color.parseColor("#FFFFFF"))
         }
-        tvbtntexi.setOnClickListener {
+        imgBtnTaxi.setOnClickListener {
             val fragment = TaxiFragment.newInstance(startPoint, endPoint)
             showFragment(fragment)
             replaceFragment(fragment)
-            tvbtnbus.setBackgroundResource(R.drawable.emboss_effect)
-            tvbtntexi.setBackgroundResource(R.drawable.deboss_effect)
+            imgBtnBus.setBackgroundColor(Color.parseColor("#FFFFFF"))
+            imgBtnTaxi.setBackgroundColor(Color.parseColor("#049EDB"))
         }
     }
 

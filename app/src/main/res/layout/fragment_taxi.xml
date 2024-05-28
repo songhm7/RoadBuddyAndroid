@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/textViewFragmentTaxi"
@@ -11,7 +12,8 @@
         android:paddingTop="100dp"
         android:text="로딩 중..."
         android:textAlignment="center"
-        android:textSize="50sp" />
+        android:textSize="50sp"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/ImageLoadingFT"
@@ -19,43 +21,203 @@
         android:layout_height="500dp"
         android:layout_marginTop="100dp"
         android:src="@drawable/turtle8"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/expect"
-        android:layout_width="match_parent"
+        android:id="@+id/moveTimeLabel"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#EEEEFF"
-        android:paddingTop="50dp"
-        android:text="예상되는"
-        android:textAlignment="center"
-        android:textSize="35dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="40dp"
+        android:text="이동시간"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toStartOf="@id/seoulFeeLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_moveTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="17분"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:visibility="invisible"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        app:layout_constraintBottom_toTopOf="@id/textViewBodyTaxi"
+        app:layout_constraintEnd_toEndOf="@id/moveTimeLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/moveTimeLabel"
+        app:layout_constraintTop_toBottomOf="@id/moveTimeLabel" />
+
+    <TextView
+        android:id="@+id/seoulFeeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="장애인택시비"
+        android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewBodyTaxi"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="#EEEEFF"
-        android:paddingStart="10dp"
-        android:paddingTop="80dp"
-        android:text="총 이동거리 : 1234Km\n\n이동 소요시간 : 1234분\n\n일반택시 요금 : 1234원\n\n장애인콜택시 대기시간 : 1234분\n\n장애인콜택시 요금 : 1234원"
+        android:id="@+id/tv_seoulFee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="1000원"
         android:textSize="25sp"
-        android:visibility="invisible"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/seoulFeeLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/seoulFeeLabel"
+        app:layout_constraintTop_toBottomOf="@id/seoulFeeLabel" />
+
+    <TextView
+        android:id="@+id/normalFeeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:text="일반택시비"
+        android:textSize="17sp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/seoulFeeLabel"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_normalFee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="2,500원"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/normalFeeLabel"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/normalFeeLabel"
+        app:layout_constraintTop_toBottomOf="@id/normalFeeLabel" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintTaxi"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/taxi_border"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/expect" />
+        app:layout_constraintTop_toBottomOf="@id/tv_moveTime">
+
+        <ImageView
+            android:id="@+id/imageTaxi"
+            android:layout_width="250dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/taxi_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/moveDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이동거리 : 5km"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageTaxi" />
+
+        <TextView
+            android:id="@+id/allWaitingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="80dp"
+            android:text="전체 대기"
+            android:textSize="17sp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageTaxi" />
+
+        <TextView
+            android:id="@+id/tv_allWaiting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8명"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/allWaitingLabel"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/allWaitingLabel"
+            app:layout_constraintTop_toBottomOf="@id/allWaitingLabel" />
+
+        <TextView
+            android:id="@+id/nearWaitingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="주변 대기"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageTaxi" />
+
+        <TextView
+            android:id="@+id/tv_nearWaiting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3명"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/nearWaitingLabel"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/nearWaitingLabel"
+            app:layout_constraintTop_toBottomOf="@id/nearWaitingLabel" />
+
+        <TextView
+            android:id="@+id/meanWaitingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:layout_marginEnd="20dp"
+            android:text="평균대기시간"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toBottomOf="@id/imageTaxi" />
+
+        <TextView
+            android:id="@+id/tv_meanWaiting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8분"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/meanWaitingLabel"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@id/meanWaitingLabel"
+            app:layout_constraintTop_toBottomOf="@id/meanWaitingLabel" />
+
+        <TextView
+            android:id="@+id/button_callNow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@color/hansung_darkBlue"
+            android:padding="15dp"
+            android:text="바로콜 신청하기"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
