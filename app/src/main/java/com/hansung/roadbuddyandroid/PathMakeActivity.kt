@@ -20,7 +20,7 @@ class PathMakeActivity : AppCompatActivity() {
     private lateinit var imgBtnBus : ImageButton
     private lateinit var imgBtnTaxi : ImageButton
     private lateinit var fragment : View
-
+    var isBus : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_make_path)
@@ -56,6 +56,9 @@ class PathMakeActivity : AppCompatActivity() {
             }
             else {
                 showFragment(BusFragment.newInstance(startPoint, endPoint))
+                isBus = true
+                imgBtnBus.setBackgroundColor(Color.parseColor("#049EDB"))
+                imgBtnTaxi.setBackgroundColor(Color.parseColor("#FFFFFF"))
                 imgBtnBus.visibility = View.VISIBLE
                 imgBtnTaxi.visibility = View.VISIBLE
             }
@@ -82,18 +85,28 @@ class PathMakeActivity : AppCompatActivity() {
             startActivity(intent)
         }
         imgBtnBus.setOnClickListener {
-            val fragment = BusFragment.newInstance(startPoint, endPoint)
-            showFragment(fragment)
-            replaceFragment(fragment)
-            imgBtnBus.setBackgroundColor(Color.parseColor("#049EDB"))
-            imgBtnTaxi.setBackgroundColor(Color.parseColor("#FFFFFF"))
+            if(isBus)
+                ;
+            else {
+                val fragment = BusFragment.newInstance(startPoint, endPoint)
+                showFragment(fragment)
+                replaceFragment(fragment)
+                imgBtnBus.setBackgroundColor(Color.parseColor("#049EDB"))
+                imgBtnTaxi.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                isBus = true
+            }
         }
         imgBtnTaxi.setOnClickListener {
-            val fragment = TaxiFragment.newInstance(startPoint, endPoint)
-            showFragment(fragment)
-            replaceFragment(fragment)
-            imgBtnBus.setBackgroundColor(Color.parseColor("#FFFFFF"))
-            imgBtnTaxi.setBackgroundColor(Color.parseColor("#049EDB"))
+            if(!isBus)
+                ;
+            else {
+                val fragment = TaxiFragment.newInstance(startPoint, endPoint)
+                showFragment(fragment)
+                replaceFragment(fragment)
+                imgBtnBus.setBackgroundColor(Color.parseColor("#FFFFFF"))
+                imgBtnTaxi.setBackgroundColor(Color.parseColor("#049EDB"))
+                isBus = false
+            }
         }
     }
 
